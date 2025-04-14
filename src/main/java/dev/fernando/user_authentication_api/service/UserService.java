@@ -11,6 +11,9 @@ import dev.fernando.user_authentication_api.exception.UserNotFound;
 import dev.fernando.user_authentication_api.mapper.UserMapper;
 import dev.fernando.user_authentication_api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,6 +28,7 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
+    @Cacheable(value = "usersByEmail", key = "loginUserDto.email()")
     public String loginUser(LoginUserDto loginUserDto){
 
         User user = userRepository.findByEmail(loginUserDto.email())
@@ -44,6 +48,7 @@ public class UserService {
         }
     }
 
+    @Cacheable(value = "usersById", key = "#id")
     public ViewUserDto findUserById(long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(UserNotFound::new);
@@ -51,6 +56,7 @@ public class UserService {
         return userMapper.userToViewUserDto(user);
     }
 
+    @Cacheable(value = "usersByEmail", key = "#email")
     public ViewUserDto findUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(UserNotFound::new);
@@ -58,6 +64,7 @@ public class UserService {
         return userMapper.userToViewUserDto(user);
     }
 
+    @CachePut(value = "usersByEmail", key = "#createUserDto.email()")
     public ViewUserDto createUser(CreateUserDto createUserDto) {
 
         userRepository.findByEmail(createUserDto.email()).ifPresent(UserAlreadyExist::new);
@@ -69,6 +76,7 @@ public class UserService {
         return userMapper.userToViewUserDto(user);
     }
 
+    @CachePut(value = "usersByEmail", key = "#updateUserDto.email()")
     public ViewUserDto updateUser(UpdateUserDto updateUserDto) {
         User user = userRepository.findByEmail(updateUserDto.email())
                 .orElseThrow(UserNotFound::new);
@@ -82,6 +90,7 @@ public class UserService {
         return userMapper.userToViewUserDto(user);
     }
 
+    @CacheEvict(value = "usersById", key = "#id")
     public ViewUserDto deleteUserById(long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(UserNotFound::new);
@@ -91,6 +100,7 @@ public class UserService {
         return userMapper.userToViewUserDto(user);
     }
 
+    @CacheEvict(value = "usersByEmail", key = "#email")
     public ViewUserDto deleteUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(UserNotFound::new);

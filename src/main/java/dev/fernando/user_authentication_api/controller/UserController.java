@@ -1,6 +1,7 @@
 package dev.fernando.user_authentication_api.controller;
 
 import dev.fernando.user_authentication_api.dto.CreateUserDto;
+import dev.fernando.user_authentication_api.dto.LoginUserDto;
 import dev.fernando.user_authentication_api.dto.UpdateUserDto;
 import dev.fernando.user_authentication_api.dto.ViewUserDto;
 import dev.fernando.user_authentication_api.service.UserService;
@@ -29,6 +30,13 @@ public class UserController {
         ViewUserDto user = userService.findUserByEmail(email);
 
         return ResponseEntity.status(HttpStatus.FOUND).body(user);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginUserDto loginUserDto) {
+        String token = userService.loginUser(loginUserDto);
+
+        return ResponseEntity.status(HttpStatus.FOUND).body(token);
     }
 
     @PostMapping("/create")
