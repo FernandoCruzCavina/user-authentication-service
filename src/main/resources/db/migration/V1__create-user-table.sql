@@ -1,0 +1,7 @@
+CREATE TABLE user(
+    customerId INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(15) NOT NULL,
+    email VARCHAR(30) NOT NULL UNIQUE,
+    password VARCHAR(30) NOT NULL,
+    phone VARCHAR(14) NOT NULL
+);
