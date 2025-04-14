@@ -15,4 +15,21 @@ public class RestExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageException);
     }
+
+    @ExceptionHandler(InvalidUserCredentials.class)
+    public ResponseEntity<MessageException> handleInvalidUserCredentials(InvalidUserCredentials ex) {
+
+        MessageException messageException = new MessageException(HttpStatus.UNAUTHORIZED, ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(messageException);
+    }
+
+    @ExceptionHandler(UserAlreadyExist.class)
+    public ResponseEntity<MessageException> handleUserAlreadyExist(UserAlreadyExist ex) {
+
+        MessageException messageException = new MessageException(HttpStatus.NOT_ACCEPTABLE, ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageException);
+    }
+
 }
