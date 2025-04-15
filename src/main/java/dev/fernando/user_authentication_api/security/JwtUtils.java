@@ -32,7 +32,7 @@ public class JwtUtils {
             return JWT.create()
                     .withIssuer(inssuer)
                     .withClaim("user", userJson)
-                    .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7))
+                    .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                     .sign(algorithm);
 
         } catch (JWTCreationException | JsonProcessingException e){

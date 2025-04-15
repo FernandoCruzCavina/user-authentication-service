@@ -10,10 +10,12 @@ import dev.fernando.user_authentication_api.exception.UserAlreadyExist;
 import dev.fernando.user_authentication_api.exception.UserNotFound;
 import dev.fernando.user_authentication_api.mapper.UserMapper;
 import dev.fernando.user_authentication_api.repository.UserRepository;
+import dev.fernando.user_authentication_api.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +23,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private static PasswordEncoder passwordEncoder;
+    private static JwtUtils jwtUtils;
 
     @Autowired
     public UserService(UserRepository userRepository, UserMapper userMapper) {
@@ -30,20 +34,23 @@ public class UserService {
 
     @Cacheable(value = "usersByEmail", key = "loginUserDto.email()")
     public String loginUser(LoginUserDto loginUserDto){
-
         User user = userRepository.findByEmail(loginUserDto.email())
                 .orElseThrow(UserNotFound::new);
 
         login(user, loginUserDto);
 
-        return "token";
+        return jwtUtils.generateToken(user);
     }
 
     private static void login(User user, LoginUserDto loginUserDto) {
         String userEmail = user.getEmail();
         String userPassword = user.getPassword();
 
-        if(userEmail.equals(loginUserDto.email()) && userPassword.equals(loginUserDto.password())){
+        if(!passwordEncoder.matches(loginUserDto.password(), userPassword)){
+            throw new InvalidUserCredentials();
+        }
+
+        if(userEmail.equals(loginUserDto.email())){
             throw new InvalidUserCredentials();
         }
     }
@@ -70,6 +77,8 @@ public class UserService {
         userRepository.findByEmail(createUserDto.email()).ifPresent(UserAlreadyExist::new);
 
         User user = userMapper.createUserDtoToUser(createUserDto);
+        String hashedPassword = passwordEncoder.encode(createUserDto.password());
+        user.setPassword(hashedPassword);
 
         userRepository.save(user);
 
