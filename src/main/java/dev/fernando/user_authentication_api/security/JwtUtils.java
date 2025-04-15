@@ -6,7 +6,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.fernando.user_authentication_api.entity.User;
+import dev.fernando.user_authentication_api.dto.JwtUserDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,24 +18,32 @@ public class JwtUtils {
     @Value("${jwt.security.key}")
     private String secretKey;
     @Value("${jwt.security.inssuer}")
-    private String inssuer;
+    private String issuer;
+    @Value("${jwt.security.expiration}")
+    private int expiration;
 
     public JwtUtils() {
     }
 
-    public String generateToken(User user) {
+    public JwtUtils(String secretKey, String issuer, int expiration) {
+        this.secretKey = secretKey;
+        this.issuer = issuer;
+        this.expiration = expiration;
+    }
+
+    public String generateToken(JwtUserDto jwtUserDto) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
-            String userJson = new ObjectMapper().writeValueAsString(user);
+            String userJson = new ObjectMapper().writeValueAsString(jwtUserDto);
 
             return JWT.create()
-                    .withIssuer(inssuer)
-                    .withClaim("user", userJson)
-                    .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                    .withIssuer(issuer)
+                    .withSubject(userJson)
+                    .withExpiresAt(new Date(System.currentTimeMillis() + expiration))
                     .sign(algorithm);
 
-        } catch (JWTCreationException | JsonProcessingException e){
+        } catch (JWTCreationException | JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
@@ -45,7 +53,7 @@ public class JwtUtils {
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
             return JWT.require(algorithm)
-                    .withIssuer(inssuer)
+                    .withIssuer(issuer)
                     .build()
                     .verify(token)
                     .getSubject();

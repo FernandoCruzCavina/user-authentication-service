@@ -1,9 +1,6 @@
 package dev.fernando.user_authentication_api.service;
 
-import dev.fernando.user_authentication_api.dto.CreateUserDto;
-import dev.fernando.user_authentication_api.dto.LoginUserDto;
-import dev.fernando.user_authentication_api.dto.UpdateUserDto;
-import dev.fernando.user_authentication_api.dto.ViewUserDto;
+import dev.fernando.user_authentication_api.dto.*;
 import dev.fernando.user_authentication_api.entity.User;
 import dev.fernando.user_authentication_api.exception.InvalidUserCredentials;
 import dev.fernando.user_authentication_api.exception.UserAlreadyExist;
@@ -23,34 +20,38 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private static PasswordEncoder passwordEncoder;
-    private static JwtUtils jwtUtils;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtils jwtUtils;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtils = jwtUtils;
     }
 
     @Cacheable(value = "usersByEmail", key = "loginUserDto.email()")
-    public String loginUser(LoginUserDto loginUserDto){
+    public String loginUser(LoginUserDto loginUserDto) {
         User user = userRepository.findByEmail(loginUserDto.email())
                 .orElseThrow(UserNotFound::new);
 
         login(user, loginUserDto);
 
-        return jwtUtils.generateToken(user);
+        JwtUserDto jwtUserDto = userMapper.userToJwtUserDto(user);
+
+        return jwtUtils.generateToken(jwtUserDto);
     }
 
-    private static void login(User user, LoginUserDto loginUserDto) {
+    private void login(User user, LoginUserDto loginUserDto) {
         String userEmail = user.getEmail();
         String userPassword = user.getPassword();
 
-        if(!passwordEncoder.matches(loginUserDto.password(), userPassword)){
+        if (!passwordEncoder.matches(loginUserDto.password(), userPassword)) {
             throw new InvalidUserCredentials();
         }
 
-        if(userEmail.equals(loginUserDto.email())){
+        if (!userEmail.equals(loginUserDto.email())) {
             throw new InvalidUserCredentials();
         }
     }
