@@ -23,20 +23,20 @@ public class UserController {
     public ResponseEntity<ViewUserDto> getUserById(@PathVariable("id") int id) {
         ViewUserDto user = userService.findUserById(id);
 
-        return ResponseEntity.status(HttpStatus.FOUND).body(user);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
     @GetMapping("/get/email={email}")
     public ResponseEntity<ViewUserDto> getUserByEmail(@PathVariable("email") String email) {
         ViewUserDto user = userService.findUserByEmail(email);
 
-        return ResponseEntity.status(HttpStatus.FOUND).body(user);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginUserDto loginUserDto) {
         String token = userService.loginUser(loginUserDto);
 
-        return ResponseEntity.status(HttpStatus.FOUND).body(token);
+        return ResponseEntity.status(HttpStatus.OK).body(token);
     }
 
     @PostMapping("/create")

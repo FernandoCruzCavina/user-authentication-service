@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "user")
@@ -22,12 +23,9 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Setter
     private String username;
     private String email;
-    @Setter
     private String password;
-    @Setter
     private String phone;
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
@@ -38,6 +36,14 @@ public class User implements UserDetails {
         this.email = email;
         this.password = password;
         this.phone = phone;
+    }
+
+    public User(String username, String email, String password, String phone, UserRole userRole) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.userRole = userRole;
     }
 
     @Override

@@ -22,18 +22,20 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private UserRepository userRepository;
 
+    public SecurityFilter(JwtUtils jwtUtils, UserRepository userRepository) {
+        this.jwtUtils = jwtUtils;
+        this.userRepository = userRepository;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = recoverToken(request);
 
         if (token != null) {
             String userJson = jwtUtils.verifyToken(token);
-
             User userFromToken = new ObjectMapper().readValue(userJson, User.class);
-
             User user = userRepository.findById(userFromToken.getId())
                     .orElseThrow(UserNotFound::new);
-
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
@@ -41,9 +43,9 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     }
 
-    public static String recoverToken(HttpServletRequest request){
+    public static String recoverToken(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
-        if(authHeader == null){
+        if (authHeader == null) {
             return null;
         }
         return authHeader.replace("Bearer ", "");

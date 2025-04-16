@@ -14,6 +14,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -31,7 +32,7 @@ public class UserService {
         this.jwtUtils = jwtUtils;
     }
 
-    @Cacheable(value = "usersByEmail", key = "loginUserDto.email()")
+    @Cacheable(value = "usersByEmail", key = "#loginUserDto.email()")
     public String loginUser(LoginUserDto loginUserDto) {
         User user = userRepository.findByEmail(loginUserDto.email())
                 .orElseThrow(UserNotFound::new);
@@ -72,6 +73,7 @@ public class UserService {
         return userMapper.userToViewUserDto(user);
     }
 
+    @Transactional
     @CachePut(value = "usersByEmail", key = "#createUserDto.email()")
     public ViewUserDto createUser(CreateUserDto createUserDto) {
 
@@ -80,12 +82,12 @@ public class UserService {
         User user = userMapper.createUserDtoToUser(createUserDto);
         String hashedPassword = passwordEncoder.encode(createUserDto.password());
         user.setPassword(hashedPassword);
-
         userRepository.save(user);
 
         return userMapper.userToViewUserDto(user);
     }
 
+    @Transactional
     @CachePut(value = "usersByEmail", key = "#updateUserDto.email()")
     public ViewUserDto updateUser(UpdateUserDto updateUserDto) {
         User user = userRepository.findByEmail(updateUserDto.email())
@@ -100,6 +102,7 @@ public class UserService {
         return userMapper.userToViewUserDto(user);
     }
 
+    @Transactional
     @CacheEvict(value = "usersById", key = "#id")
     public ViewUserDto deleteUserById(long id) {
         User user = userRepository.findById(id)
@@ -110,6 +113,7 @@ public class UserService {
         return userMapper.userToViewUserDto(user);
     }
 
+    @Transactional
     @CacheEvict(value = "usersByEmail", key = "#email")
     public ViewUserDto deleteUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
