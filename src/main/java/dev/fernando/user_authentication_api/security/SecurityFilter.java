@@ -30,10 +30,12 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = recoverToken(request);
-
+        System.out.println(token + "token");
         if (token != null) {
             String userJson = jwtUtils.verifyToken(token);
+            System.out.println(userJson + "userjson");
             User userFromToken = new ObjectMapper().readValue(userJson, User.class);
+            System.out.println(userFromToken.getEmail() + "userFromToken");
             User user = userRepository.findById(userFromToken.getId())
                     .orElseThrow(UserNotFound::new);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
@@ -45,6 +47,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     public static String recoverToken(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
+        System.out.println(authHeader);
         if (authHeader == null) {
             return null;
         }

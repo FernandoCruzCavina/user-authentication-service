@@ -1,5 +1,6 @@
 package dev.fernando.user_authentication_api.mapper;
 
+import dev.fernando.user_authentication_api.constants.UserRole;
 import dev.fernando.user_authentication_api.dto.CreateUserDto;
 import dev.fernando.user_authentication_api.entity.User;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,8 @@ class UserMapperTest {
                 "name",
                 "e@m.com",
                 "123",
-                "999"
+                "999",
+                UserRole.USER
         );
 
         User user = userMapper.createUserDtoToUser(createUserDto);

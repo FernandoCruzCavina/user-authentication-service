@@ -93,8 +93,10 @@ public class UserService {
         User user = userRepository.findByEmail(updateUserDto.email())
                 .orElseThrow(UserNotFound::new);
 
+        String hashedPassword = passwordEncoder.encode(updateUserDto.password());
+
         user.setUsername(updateUserDto.username());
-        user.setPassword(updateUserDto.password());
+        user.setPassword(hashedPassword);
         user.setPhone(updateUserDto.phone());
 
         userRepository.save(user);

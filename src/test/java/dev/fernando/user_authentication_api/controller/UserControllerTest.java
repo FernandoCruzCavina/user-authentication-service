@@ -64,7 +64,7 @@ class UserControllerTest {
                 user.getUsername(),
                 user.getEmail(),
                 user.getPhone(),
-                user.getUserRole()
+                user.getUser_role()
         );
         return jwtUtils.generateToken(jwtUserDto);
     }
@@ -74,7 +74,7 @@ class UserControllerTest {
         User user = createTestUser("test@example.com");
         token = generateToken(user);
 
-        CreateUserDto createUserDto = new CreateUserDto("user", "email@test.com", "password", "999999");
+        CreateUserDto createUserDto = new CreateUserDto("user", "email@test.com", "password", "999999", UserRole.USER);
 
         String json = objectMapper.writeValueAsString(createUserDto);
 

@@ -28,7 +28,7 @@ public class User implements UserDetails {
     private String password;
     private String phone;
     @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    private UserRole user_role;
 
 
     public User(String username, String email, String password, String phone) {
@@ -38,17 +38,17 @@ public class User implements UserDetails {
         this.phone = phone;
     }
 
-    public User(String username, String email, String password, String phone, UserRole userRole) {
+    public User(String username, String email, String password, String phone, UserRole user_role) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.phone = phone;
-        this.userRole = userRole;
+        this.user_role = user_role;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.userRole==UserRole.ADMIN) {
+        if(this.user_role ==UserRole.ADMIN) {
             return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
         } else {
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));

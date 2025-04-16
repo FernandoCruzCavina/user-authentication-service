@@ -7,6 +7,6 @@ public record JwtUserDto(
         String username,
         String email,
         String phone,
-        UserRole userRole
+        UserRole user_role
 )
 {}

@@ -33,6 +33,17 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/user/delete").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/user/create").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                 "/v3/api-docs",
+                                 "/swagger-resources",
+                                 "/swagger-resources/**",
+                                 "/swagger-ui.html",
+                                 "/swagger-ui/**",
+                                 "/configuration/ui",
+                                 "/configuration/security",
+                                 "/webjars/**"
+                        ).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
