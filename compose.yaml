@@ -1,9 +1,16 @@
-name: 'redis'
-
+name: 'user-bank'
+#redis name and container name
 services:
   redis:
-    image: 'redis:latest'
+    image: 'redis:7.2'
     container_name: 'redis'
     ports:
       - '6379:6379'
+    restart: unless-stopped
+
+  app:
+    container_name: springboot-app
+    build: .
+    ports:
+      - "8080:8080"
     restart: unless-stopped

@@ -27,6 +27,8 @@ public class User implements UserDetails {
     private String email;
     private String password;
     private String phone;
+    private String cpf;
+    private long birthday_date;
     @Enumerated(EnumType.STRING)
     private UserRole user_role;
 
@@ -43,6 +45,16 @@ public class User implements UserDetails {
         this.email = email;
         this.password = password;
         this.phone = phone;
+        this.user_role = user_role;
+    }
+
+    public User(String username, String email, String password, String phone, String cpf, long birthday_date, UserRole user_role) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.cpf = cpf;
+        this.birthday_date = birthday_date;
         this.user_role = user_role;
     }
 

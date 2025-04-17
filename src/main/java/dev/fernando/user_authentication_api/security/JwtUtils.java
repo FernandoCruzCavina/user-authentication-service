@@ -19,7 +19,7 @@ public class JwtUtils {
     private String secretKey;
     @Value("${jwt.security.inssuer}")
     private String issuer;
-
+    @Value("${jwt.security.expiration}")
     private int expiration= 60*1000*60;
 
     public JwtUtils() {

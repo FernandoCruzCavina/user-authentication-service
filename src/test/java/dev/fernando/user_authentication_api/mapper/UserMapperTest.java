@@ -5,6 +5,9 @@ import dev.fernando.user_authentication_api.dto.CreateUserDto;
 import dev.fernando.user_authentication_api.entity.User;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
+import java.util.Date;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -21,6 +24,8 @@ class UserMapperTest {
                 "e@m.com",
                 "123",
                 "999",
+                "222",
+                Date.from(Instant.now()),
                 UserRole.USER
         );
 

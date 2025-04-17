@@ -15,6 +15,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,9 +50,9 @@ class UserServiceTest {
 
     @BeforeEach
     public void setUp() {
-        user = new User(1, "user", "email@test.com", "password", "999999", UserRole.USER);
+        user = new User(1, "user", "email@test.com", "password", "999999", "333333",555555, UserRole.USER);
         expectedViewUserDto = new ViewUserDto(1, "user", "email@test.com", "999999");
-        createUserDto = new CreateUserDto("user", "email@test.com", "password", "999999", UserRole.USER);
+        createUserDto = new CreateUserDto("user", "email@test.com", "password", "999999", "333333", Date.from(Instant.now()), UserRole.USER);
         updateUserDto = new UpdateUserDto("user", "email@test.com", "password", "999999");
         loginUserDto = new LoginUserDto("email@test.com", "password");
         jwtUserDto = new JwtUserDto(1, "user", "email@test.com", "999999", UserRole.USER);

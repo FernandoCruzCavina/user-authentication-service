@@ -20,6 +20,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.Instant;
+import java.util.Date;
+
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -74,7 +77,7 @@ class UserControllerTest {
         User user = createTestUser("test@example.com");
         token = generateToken(user);
 
-        CreateUserDto createUserDto = new CreateUserDto("user", "email@test.com", "password", "999999", UserRole.USER);
+        CreateUserDto createUserDto = new CreateUserDto("user", "email@test.com", "password", "999999", "222222", Date.from(Instant.now()), UserRole.USER);
 
         String json = objectMapper.writeValueAsString(createUserDto);
 
