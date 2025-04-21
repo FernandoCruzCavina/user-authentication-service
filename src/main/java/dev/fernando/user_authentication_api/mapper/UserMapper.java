@@ -15,7 +15,8 @@ public interface UserMapper {
 
     ViewUserDto userToViewUserDto(User user);
 
-    @Mapping(source = "email", target = "email")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "authorities", ignore = true)
     @Mapping(source = "birthday_date", target = "birthday_date", qualifiedByName = "dateToEpoch")
     User createUserDtoToUser(CreateUserDto createUserDto);
 

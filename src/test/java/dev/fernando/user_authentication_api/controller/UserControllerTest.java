@@ -9,7 +9,6 @@ import dev.fernando.user_authentication_api.dto.UpdateUserDto;
 import dev.fernando.user_authentication_api.entity.User;
 import dev.fernando.user_authentication_api.repository.UserRepository;
 import dev.fernando.user_authentication_api.security.JwtUtils;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@Transactional
 class UserControllerTest {
 
     @Autowired

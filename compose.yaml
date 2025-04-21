@@ -1,16 +1,38 @@
 name: 'user-bank'
-#redis name and container name
 services:
+  user-service:
+    image: bank-user:1.1
+    container_name: 'user-service-api'
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    restart: always
+
+  mysql:
+    image: 'mysql:latest'
+    container_name: 'mysql'
+    ports:
+      - '3307:3306'
+    env_file:
+      - .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    restart: always
+
   redis:
-    image: 'redis:7.2'
+    image: 'redis:latest'
     container_name: 'redis'
     ports:
       - '6379:6379'
-    restart: unless-stopped
+    restart: always
 
-  app:
-    container_name: springboot-app
-    build: .
-    ports:
-      - "8080:8080"
-    restart: unless-stopped
