@@ -5,6 +5,7 @@ import dev.fernando.user_authentication_api.constants.UserRole;
 import dev.fernando.user_authentication_api.dto.*;
 import dev.fernando.user_authentication_api.entity.User;
 import dev.fernando.user_authentication_api.mapper.UserMapper;
+import dev.fernando.user_authentication_api.producer.UserProducer;
 import dev.fernando.user_authentication_api.repository.UserRepository;
 import dev.fernando.user_authentication_api.security.JwtUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +38,9 @@ class UserServiceTest {
 
     @Mock
     private JwtUtils jwtUtils;
+
+    @Mock
+    private UserProducer userProducer;
 
     @InjectMocks
     private UserService userService;

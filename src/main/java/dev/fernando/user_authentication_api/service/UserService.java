@@ -6,6 +6,7 @@ import dev.fernando.user_authentication_api.exception.InvalidUserCredentials;
 import dev.fernando.user_authentication_api.exception.UserAlreadyExist;
 import dev.fernando.user_authentication_api.exception.UserNotFound;
 import dev.fernando.user_authentication_api.mapper.UserMapper;
+import dev.fernando.user_authentication_api.producer.UserProducer;
 import dev.fernando.user_authentication_api.repository.UserRepository;
 import dev.fernando.user_authentication_api.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,15 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
+    private final UserProducer userProducer;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, JwtUtils jwtUtils, UserProducer userProducer) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
+        this.userProducer = userProducer;
     }
 
     @Cacheable(value = "usersByEmail", key = "#loginUserDto.email()")
@@ -82,8 +85,9 @@ public class UserService {
         User user = userMapper.createUserDtoToUser(createUserDto);
         String hashedPassword = passwordEncoder.encode(createUserDto.password());
         user.setPassword(hashedPassword);
-        userRepository.save(user);
+        User createdUser = userRepository.save(user);
 
+        userProducer.publishMessageEmail(createdUser);
         return userMapper.userToViewUserDto(user);
     }
 
