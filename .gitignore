@@ -10,7 +10,7 @@ target/
 *.iml
 *.ipr
 *.properties
-.azure/
+.azure
 *.env
 
 ### STS ###
