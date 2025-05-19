@@ -47,7 +47,7 @@ jobs:
           spring.jpa.hibernate.ddl-auto=create-drop
 
           spring.rabbitmq.addresses=${{ secrets.RABBITMQ_ADDRESSES }}
-          broker.queue.account=${{ secrets.BROKER_QUEUE_USER_NAME }}
+          broker.queue.email.sender=${{ secrets.BROKER_QUEUE_USER_NAME }}
           " > src/test/resources/application-test.properties
 
       - name: Set application.properties
@@ -62,7 +62,7 @@ jobs:
           spring.flyway.enabled=false
 
           spring.rabbitmq.addresses=${{ secrets.RABBITMQ_ADDRESSES }}
-          broker.queue.account=${{ secrets.BROKER_QUEUE_USER_NAME }}
+          broker.queue.email.sender=${{ secrets.BROKER_QUEUE_USER_NAME }}
           " > src/main/resources/application.properties
 
       - name: Build and analyze
