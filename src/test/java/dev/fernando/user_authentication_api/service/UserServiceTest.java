@@ -1,13 +1,13 @@
 package dev.fernando.user_authentication_api.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.fernando.user_authentication_api.constants.UserRole;
-import dev.fernando.user_authentication_api.dto.*;
+import dev.fernando.user_authentication_api.dto.CreateUserDto;
+import dev.fernando.user_authentication_api.dto.UpdateUserDto;
+import dev.fernando.user_authentication_api.dto.ViewUserDto;
 import dev.fernando.user_authentication_api.entity.User;
 import dev.fernando.user_authentication_api.mapper.UserMapper;
 import dev.fernando.user_authentication_api.producer.UserProducer;
 import dev.fernando.user_authentication_api.repository.UserRepository;
-import dev.fernando.user_authentication_api.security.JwtUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,9 +37,6 @@ class UserServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
-    private JwtUtils jwtUtils;
-
-    @Mock
     private UserProducer userProducer;
 
     @InjectMocks
@@ -49,8 +46,6 @@ class UserServiceTest {
     private static ViewUserDto expectedViewUserDto;
     private static CreateUserDto createUserDto;
     private static UpdateUserDto updateUserDto;
-    private static LoginUserDto loginUserDto;
-    private static JwtUserDto jwtUserDto;
 
     @BeforeEach
     public void setUp() {
@@ -58,21 +53,6 @@ class UserServiceTest {
         expectedViewUserDto = new ViewUserDto(1, "user", "email@test.com", "999999");
         createUserDto = new CreateUserDto("user", "email@test.com", "password", "999999", "333333", Date.from(Instant.now()), UserRole.USER);
         updateUserDto = new UpdateUserDto("user", "email@test.com", "password", "999999");
-        loginUserDto = new LoginUserDto("email@test.com", "password");
-        jwtUserDto = new JwtUserDto(1, "user", "email@test.com", "999999", UserRole.USER);
-    }
-
-    @Test
-    void loginUser() throws JsonProcessingException {
-        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches(loginUserDto.password(), user.getPassword())).thenReturn(true);
-        when(jwtUtils.generateToken(jwtUserDto)).thenReturn("token");
-        when(userMapper.userToJwtUserDto(user)).thenReturn(jwtUserDto);
-
-        String token = userService.loginUser(loginUserDto);
-
-        assertNotNull(token);
-        verify(userRepository).findByEmail(user.getEmail());
     }
 
     @Test

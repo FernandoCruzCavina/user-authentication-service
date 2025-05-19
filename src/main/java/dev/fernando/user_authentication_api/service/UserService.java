@@ -1,14 +1,14 @@
 package dev.fernando.user_authentication_api.service;
 
-import dev.fernando.user_authentication_api.dto.*;
+import dev.fernando.user_authentication_api.dto.CreateUserDto;
+import dev.fernando.user_authentication_api.dto.UpdateUserDto;
+import dev.fernando.user_authentication_api.dto.ViewUserDto;
 import dev.fernando.user_authentication_api.entity.User;
-import dev.fernando.user_authentication_api.exception.InvalidUserCredentials;
 import dev.fernando.user_authentication_api.exception.UserAlreadyExist;
 import dev.fernando.user_authentication_api.exception.UserNotFound;
 import dev.fernando.user_authentication_api.mapper.UserMapper;
 import dev.fernando.user_authentication_api.producer.UserProducer;
 import dev.fernando.user_authentication_api.repository.UserRepository;
-import dev.fernando.user_authentication_api.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -23,41 +23,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtils jwtUtils;
     private final UserProducer userProducer;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, JwtUtils jwtUtils, UserProducer userProducer) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, UserProducer userProducer) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
-        this.jwtUtils = jwtUtils;
         this.userProducer = userProducer;
-    }
-
-    @Cacheable(value = "usersByEmail", key = "#loginUserDto.email()")
-    public String loginUser(LoginUserDto loginUserDto) {
-        User user = userRepository.findByEmail(loginUserDto.email())
-                .orElseThrow(UserNotFound::new);
-
-        login(user, loginUserDto);
-
-        JwtUserDto jwtUserDto = userMapper.userToJwtUserDto(user);
-
-        return jwtUtils.generateToken(jwtUserDto);
-    }
-
-    private void login(User user, LoginUserDto loginUserDto) {
-        String userEmail = user.getEmail();
-        String userPassword = user.getPassword();
-
-        if (!passwordEncoder.matches(loginUserDto.password(), userPassword)) {
-            throw new InvalidUserCredentials();
-        }
-
-        if (!userEmail.equals(loginUserDto.email())) {
-            throw new InvalidUserCredentials();
-        }
     }
 
     @Cacheable(value = "usersById", key = "#id")

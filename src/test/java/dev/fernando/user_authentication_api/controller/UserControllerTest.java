@@ -3,12 +3,9 @@ package dev.fernando.user_authentication_api.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.fernando.user_authentication_api.constants.UserRole;
 import dev.fernando.user_authentication_api.dto.CreateUserDto;
-import dev.fernando.user_authentication_api.dto.JwtUserDto;
-import dev.fernando.user_authentication_api.dto.LoginUserDto;
 import dev.fernando.user_authentication_api.dto.UpdateUserDto;
 import dev.fernando.user_authentication_api.entity.User;
 import dev.fernando.user_authentication_api.repository.UserRepository;
-import dev.fernando.user_authentication_api.security.JwtUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +19,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.time.Instant;
 import java.util.Date;
 
-import static org.hamcrest.Matchers.isEmptyOrNullString;
-import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -44,11 +40,6 @@ class UserControllerTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private JwtUtils jwtUtils;
-
-    private static String token;
-
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
@@ -59,29 +50,14 @@ class UserControllerTest {
         return userRepository.save(user);
     }
 
-    private String generateToken(User user) {
-        JwtUserDto jwtUserDto = new JwtUserDto(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getPhone(),
-                user.getUser_role()
-        );
-        return jwtUtils.generateToken(jwtUserDto);
-    }
-
     @Test
     void testCreateUser() throws Exception {
-        User user = createTestUser("test@example.com");
-        token = generateToken(user);
-
         CreateUserDto createUserDto = new CreateUserDto("user", "email@test.com", "password", "999999", "222222", Date.from(Instant.now()), UserRole.USER);
 
         String json = objectMapper.writeValueAsString(createUserDto);
 
 
         mockMvc.perform(post("/user/create")
-                        .header("Authorization", token)
                         .contentType("application/json")
                         .content(json))
                 .andExpect(status().isCreated())
@@ -92,12 +68,10 @@ class UserControllerTest {
     @Test
     void testGetUserById() throws Exception {
         User user = createTestUser("test@example.com");
-        token = generateToken(user);
 
         User user1 = userRepository.save(new User("user", "email@test.com", "password", "999999"));
 
-        mockMvc.perform(get("/user/get/id=" + user1.getId())
-                        .header("Authorization",token))
+        mockMvc.perform(get("/user/get/id=" + user1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("email@test.com"))
                 .andExpect(jsonPath("$.username").value("user"));
@@ -106,37 +80,18 @@ class UserControllerTest {
     @Test
     void testGetUserByEmail() throws Exception {
         User user = createTestUser("test@example.com");
-        token = generateToken(user);
 
         userRepository.save(new User("user", "email@test.com", "password", "999999"));
 
-        mockMvc.perform(get("/user/get/email=email@test.com")
-                        .header("Authorization", token))
+        mockMvc.perform(get("/user/get/email=email@test.com"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("email@test.com"))
                 .andExpect(jsonPath("$.username").value("user"));
     }
 
     @Test
-    void testLogin() throws Exception {
-        String password = passwordEncoder.encode("password");
-        userRepository.save(new User("user", "email4@test.com", password, "999999", UserRole.USER));
-
-        LoginUserDto loginUserDto = new LoginUserDto("email4@test.com", "password");
-
-        String json = objectMapper.writeValueAsString(loginUserDto);
-
-        mockMvc.perform(post("/user/login")
-                        .contentType("application/json")
-                        .content(json))
-                .andExpect(status().isOk())
-                .andExpect(content().string(not(isEmptyOrNullString())));
-    }
-
-    @Test
     void testUpdateUser() throws Exception {
         User user = createTestUser("test@example.com");
-        token = generateToken(user);
 
         userRepository.save(new User("user", "email@test.com", "password", "999999"));
 
@@ -144,7 +99,6 @@ class UserControllerTest {
         String json = objectMapper.writeValueAsString(updateUserDto);
 
         mockMvc.perform(put("/user/update")
-                        .header("Authorization", token)
                         .contentType("application/json")
                         .content(json))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -155,12 +109,10 @@ class UserControllerTest {
     @Test
     void testDeleteUserById() throws Exception {
         User user = createTestUser("test@example.com");
-        token = generateToken(user);
 
         User user1 = userRepository.save(new User("user", "email@test.com", "password", "999999"));
 
-        mockMvc.perform(delete("/user/delete/id=" + user1.getId())
-                        .header("Authorization", token))
+        mockMvc.perform(delete("/user/delete/id=" + user1.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(user1.getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("email@test.com"));
@@ -169,12 +121,10 @@ class UserControllerTest {
     @Test
     void testDeleteUserByEmail() throws Exception {
         User user = createTestUser("test@example.com");
-        token = generateToken(user);
 
         userRepository.save(new User("user", "email@test.com", "password", "999999"));
 
-        mockMvc.perform(delete("/user/delete/emai=email@test.com")
-                        .header("Authorization", token))
+        mockMvc.perform(delete("/user/delete/emai=email@test.com"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("email@test.com"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("user"));
