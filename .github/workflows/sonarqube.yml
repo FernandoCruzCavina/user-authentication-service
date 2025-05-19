@@ -1,0 +1,74 @@
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Analyze with SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v1
+        with:
+          java-version: 21
+
+      - name: Cache SonarQube packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Set application-test.properties
+        run: |
+          mkdir -p src/test/resources
+          echo "
+          spring.flyway.enabled=false
+
+          spring.datasource.url=jdbc:h2:mem:user-auth-test;DB_CLOSE_DELAY=-1
+          spring.datasource.username=sa
+          spring.datasource.password=
+          spring.datasource.driver-class-name=org.h2.Driver
+          spring.jpa.hibernate.ddl-auto=create-drop
+
+          spring.rabbitmq.addresses=${{ secrets.RABBITMQ_ADDRESSES }}
+          broker.queue.account=${{ secrets.BROKER_QUEUE_USER_NAME }}
+          " > src/test/resources/application-test.properties
+
+      - name: Set application.properties
+        run: |
+          mkdir -p src/main/resources
+          echo "
+          spring.datasource.url=jdbc:h2:mem:user-auth-test;DB_CLOSE_DELAY=-1
+          spring.datasource.username=sa
+          spring.datasource.password=
+          spring.datasource.driver-class-name=org.h2.Driver
+
+          spring.flyway.enabled=false
+
+          spring.rabbitmq.addresses=${{ secrets.RABBITMQ_ADDRESSES }}
+          broker.queue.account=${{ secrets.BROKER_QUEUE_USER_NAME }}
+          " > src/main/resources/application.properties
+
+      - name: Build and analyze
+        run: |
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.projectKey=FernandoCruzCavina_user-authentication-service \
+            -Dsonar.organization=fernandocruzcavina \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }}

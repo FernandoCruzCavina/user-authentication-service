@@ -1,5 +1,13 @@
 # User Service
 
+<div>
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=FernandoCruzCavina_user-authentication-service&metric=alert_status" />
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=FernandoCruzCavina_user-authentication-service&metric=sqale_rating"/>
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=FernandoCruzCavina_user-authentication-service&metric=code_smells" />
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=FernandoCruzCavina_user-authentication-service&metric=duplicated_lines_density" />
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=FernandoCruzCavina_user-authentication-service&metric=coverage" />
+</div>
+
 ## Table of Contents
 
 - 👤 [User](https://github.com/FernandoCruzCavina/user-authentication-service)  ⬅️ You are here
