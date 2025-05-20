@@ -1,10 +1,10 @@
 package dev.fernando.user_authentication_api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.fernando.user_authentication_api.constants.UserRole;
+import dev.fernando.user_authentication_api.enums.UserRole;
 import dev.fernando.user_authentication_api.dto.CreateUserDto;
 import dev.fernando.user_authentication_api.dto.UpdateUserDto;
-import dev.fernando.user_authentication_api.entity.User;
+import dev.fernando.user_authentication_api.model.User;
 import dev.fernando.user_authentication_api.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -93,12 +93,12 @@ class UserControllerTest {
     void testUpdateUser() throws Exception {
         User user = createTestUser("test@example.com");
 
-        userRepository.save(new User("user", "email@test.com", "password", "999999"));
+        var userSaved = userRepository.save(new User("user", "email@test.com", "password", "999999"));
 
-        UpdateUserDto updateUserDto = new UpdateUserDto("updatedUser","email@test.com","newPassword","888888");
+        UpdateUserDto updateUserDto = new UpdateUserDto("updatedUser","newPassword","888888");
         String json = objectMapper.writeValueAsString(updateUserDto);
 
-        mockMvc.perform(put("/user/update")
+        mockMvc.perform(put("/user/update/id=" + userSaved.getId())
                         .contentType("application/json")
                         .content(json))
                 .andExpect(MockMvcResultMatchers.status().isOk())

@@ -1,6 +1,6 @@
-package dev.fernando.user_authentication_api.entity;
+package dev.fernando.user_authentication_api.model;
 
-import dev.fernando.user_authentication_api.constants.UserRole;
+import dev.fernando.user_authentication_api.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

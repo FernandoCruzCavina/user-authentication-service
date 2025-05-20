@@ -1,7 +1,7 @@
 package dev.fernando.user_authentication_api.producer;
 
 import dev.fernando.user_authentication_api.dto.SendEmailDto;
-import dev.fernando.user_authentication_api.entity.User;
+import dev.fernando.user_authentication_api.model.User;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

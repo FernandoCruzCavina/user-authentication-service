@@ -1,6 +1,6 @@
 package dev.fernando.user_authentication_api.repository;
 
-import dev.fernando.user_authentication_api.entity.User;
+import dev.fernando.user_authentication_api.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

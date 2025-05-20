@@ -1,8 +1,8 @@
 package dev.fernando.user_authentication_api.mapper;
 
-import dev.fernando.user_authentication_api.constants.UserRole;
+import dev.fernando.user_authentication_api.enums.UserRole;
 import dev.fernando.user_authentication_api.dto.CreateUserDto;
-import dev.fernando.user_authentication_api.entity.User;
+import dev.fernando.user_authentication_api.model.User;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

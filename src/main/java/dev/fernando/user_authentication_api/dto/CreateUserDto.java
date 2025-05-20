@@ -1,6 +1,6 @@
 package dev.fernando.user_authentication_api.dto;
 
-import dev.fernando.user_authentication_api.constants.UserRole;
+import dev.fernando.user_authentication_api.enums.UserRole;
 
 import java.util.Date;
 

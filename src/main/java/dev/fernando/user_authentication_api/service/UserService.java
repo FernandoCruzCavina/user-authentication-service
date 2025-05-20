@@ -3,7 +3,7 @@ package dev.fernando.user_authentication_api.service;
 import dev.fernando.user_authentication_api.dto.CreateUserDto;
 import dev.fernando.user_authentication_api.dto.UpdateUserDto;
 import dev.fernando.user_authentication_api.dto.ViewUserDto;
-import dev.fernando.user_authentication_api.entity.User;
+import dev.fernando.user_authentication_api.model.User;
 import dev.fernando.user_authentication_api.exception.UserAlreadyExist;
 import dev.fernando.user_authentication_api.exception.UserNotFound;
 import dev.fernando.user_authentication_api.mapper.UserMapper;
@@ -65,9 +65,9 @@ public class UserService {
     }
 
     @Transactional
-    @CachePut(value = "usersByEmail", key = "#updateUserDto.email()")
-    public ViewUserDto updateUser(UpdateUserDto updateUserDto) {
-        User user = userRepository.findByEmail(updateUserDto.email())
+    @CachePut(value = "usersById", key = "#id")
+    public ViewUserDto updateUser(int id, UpdateUserDto updateUserDto) {
+        User user = userRepository.findById(id)
                 .orElseThrow(UserNotFound::new);
 
         String hashedPassword = passwordEncoder.encode(updateUserDto.password());

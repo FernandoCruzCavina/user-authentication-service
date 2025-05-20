@@ -1,10 +1,10 @@
 package dev.fernando.user_authentication_api.service;
 
-import dev.fernando.user_authentication_api.constants.UserRole;
+import dev.fernando.user_authentication_api.enums.UserRole;
 import dev.fernando.user_authentication_api.dto.CreateUserDto;
 import dev.fernando.user_authentication_api.dto.UpdateUserDto;
 import dev.fernando.user_authentication_api.dto.ViewUserDto;
-import dev.fernando.user_authentication_api.entity.User;
+import dev.fernando.user_authentication_api.model.User;
 import dev.fernando.user_authentication_api.mapper.UserMapper;
 import dev.fernando.user_authentication_api.producer.UserProducer;
 import dev.fernando.user_authentication_api.repository.UserRepository;
@@ -52,7 +52,7 @@ class UserServiceTest {
         user = new User(1, "user", "email@test.com", "password", "999999", "333333",555555, UserRole.USER);
         expectedViewUserDto = new ViewUserDto(1, "user", "email@test.com", "999999");
         createUserDto = new CreateUserDto("user", "email@test.com", "password", "999999", "333333", Date.from(Instant.now()), UserRole.USER);
-        updateUserDto = new UpdateUserDto("user", "email@test.com", "password", "999999");
+        updateUserDto = new UpdateUserDto("user", "password", "999999");
     }
 
     @Test
@@ -94,10 +94,10 @@ class UserServiceTest {
 
     @Test
     void updateUser() {
-        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
         when(userMapper.userToViewUserDto(user)).thenReturn(expectedViewUserDto);
 
-        ViewUserDto result = userService.updateUser(updateUserDto);
+        ViewUserDto result = userService.updateUser(1,updateUserDto);
 
         assertNotNull(result);
         assertEquals(expectedViewUserDto, result);
