@@ -57,7 +57,7 @@ class UserControllerTest {
         String json = objectMapper.writeValueAsString(createUserDto);
 
 
-        mockMvc.perform(post("/user/create")
+        mockMvc.perform(post("/user")
                         .contentType("application/json")
                         .content(json))
                 .andExpect(status().isCreated())
@@ -71,7 +71,7 @@ class UserControllerTest {
 
         User user1 = userRepository.save(new User("user", "email@test.com", "password", "999999"));
 
-        mockMvc.perform(get("/user/get/id=" + user1.getId()))
+        mockMvc.perform(get("/user/id=" + user1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("email@test.com"))
                 .andExpect(jsonPath("$.username").value("user"));
@@ -83,7 +83,7 @@ class UserControllerTest {
 
         userRepository.save(new User("user", "email@test.com", "password", "999999"));
 
-        mockMvc.perform(get("/user/get/email=email@test.com"))
+        mockMvc.perform(get("/user/email=email@test.com"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("email@test.com"))
                 .andExpect(jsonPath("$.username").value("user"));
@@ -98,7 +98,7 @@ class UserControllerTest {
         UpdateUserDto updateUserDto = new UpdateUserDto("updatedUser","newPassword","888888");
         String json = objectMapper.writeValueAsString(updateUserDto);
 
-        mockMvc.perform(put("/user/update/id=" + userSaved.getId())
+        mockMvc.perform(put("/user/id=" + userSaved.getId())
                         .contentType("application/json")
                         .content(json))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -112,7 +112,7 @@ class UserControllerTest {
 
         User user1 = userRepository.save(new User("user", "email@test.com", "password", "999999"));
 
-        mockMvc.perform(delete("/user/delete/id=" + user1.getId()))
+        mockMvc.perform(delete("/user/id=" + user1.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(user1.getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("email@test.com"));
@@ -124,7 +124,7 @@ class UserControllerTest {
 
         userRepository.save(new User("user", "email@test.com", "password", "999999"));
 
-        mockMvc.perform(delete("/user/delete/emai=email@test.com"))
+        mockMvc.perform(delete("/user/email=email@test.com"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("email@test.com"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("user"));

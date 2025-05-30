@@ -11,7 +11,7 @@ import java.util.Date;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-
+    
     ViewUserDto userToViewUserDto(User user);
 
     @Mapping(target = "id", ignore = true)

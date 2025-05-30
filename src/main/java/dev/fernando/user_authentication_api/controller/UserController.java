@@ -22,7 +22,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/get/id={id}")
+    @GetMapping("/id={id}")
     public ResponseEntity<EntityModel<ViewUserDto>> getUserById(@PathVariable("id") int id) {
         ViewUserDto user = userService.findUserById(id);
 
@@ -33,7 +33,7 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(model);
     }
-    @GetMapping("/get/email={email}")
+    @GetMapping("/email={email}")
     public ResponseEntity<EntityModel<ViewUserDto>> getUserByEmail(@PathVariable("email") String email) {
         ViewUserDto user = userService.findUserByEmail(email);
 
@@ -45,7 +45,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(model);
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<EntityModel<ViewUserDto>> createUser(@RequestBody CreateUserDto user) {
         ViewUserDto userDto = userService.createUser(user);
 
@@ -58,7 +58,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(model);
     }
 
-    @PutMapping("/update/id={id}")
+    @PutMapping("/id={id}")
     public ResponseEntity<EntityModel<ViewUserDto>> updateUser(@PathVariable int id, @RequestBody UpdateUserDto user) {
         ViewUserDto userDto = userService.updateUser(id, user);
 
@@ -70,7 +70,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(model);
     }
 
-    @DeleteMapping("/delete/id={id}")
+    @DeleteMapping("/id={id}")
     public ResponseEntity<EntityModel<ViewUserDto>> deleteUserById(@PathVariable("id") int id) {
         ViewUserDto userDto = userService.deleteUserById(id);
 
@@ -80,7 +80,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(model);
     }
 
-    @DeleteMapping("/delete/emai={email}")
+    @DeleteMapping("/email={email}")
     public ResponseEntity<EntityModel<ViewUserDto>> deleteUserByEmail(@PathVariable String email) {
         ViewUserDto userDto = userService.deleteUserByEmail(email);
 
