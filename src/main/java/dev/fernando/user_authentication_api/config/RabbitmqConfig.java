@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class LavinMQConfig {
+public class RabbitmqConfig {
 
     @Value("${broker.queue.email.sender}")
     public String QUEUE_NAME;
