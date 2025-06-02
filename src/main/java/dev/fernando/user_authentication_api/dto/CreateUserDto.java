@@ -1,8 +1,8 @@
 package dev.fernando.user_authentication_api.dto;
 
-import dev.fernando.user_authentication_api.enums.UserRole;
-
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public record CreateUserDto(
     String username,
@@ -10,6 +10,6 @@ public record CreateUserDto(
     String password,
     String phone,
     String cpf,
-    Date birthday_date,
-    UserRole user_role
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    Date birthday_date
 ){}

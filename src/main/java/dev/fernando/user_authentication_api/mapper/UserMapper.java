@@ -9,18 +9,17 @@ import org.mapstruct.Named;
 
 import java.util.Date;
 
+
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    
     ViewUserDto userToViewUserDto(User user);
-
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "authorities", ignore = true)
     @Mapping(source = "birthday_date", target = "birthday_date", qualifiedByName = "dateToEpoch")
     User createUserDtoToUser(CreateUserDto createUserDto);
 
+
     @Named("dateToEpoch")
-    static Long mapDateToEpoch(Date date) {
-        return date.getTime();
+    default Long dateToEpoch(Date date) {
+        return date == null ? null : date.getTime();
     }
 }

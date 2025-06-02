@@ -47,7 +47,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<EntityModel<ViewUserDto>> createUser(@RequestBody CreateUserDto user) {
-        ViewUserDto userDto = userService.createUser(user);
+        ViewUserDto userDto = userService.createUserWithDefaultRole(user);
 
         EntityModel<ViewUserDto> model = EntityModel.of(userDto);
         model.add(linkTo(methodOn(UserController.class).createUser(user)).withSelfRel());

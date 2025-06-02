@@ -51,7 +51,7 @@ class UserServiceTest {
     public void setUp() {
         user = new User(1, "user", "email@test.com", "password", "999999", "333333",555555, UserRole.USER);
         expectedViewUserDto = new ViewUserDto(1, "user", "email@test.com", "999999");
-        createUserDto = new CreateUserDto("user", "email@test.com", "password", "999999", "333333", Date.from(Instant.now()), UserRole.USER);
+        createUserDto = new CreateUserDto("user", "email@test.com", "password", "999999", "333333", Date.from(Instant.now()));
         updateUserDto = new UpdateUserDto("user", "password", "999999");
     }
 
@@ -85,7 +85,7 @@ class UserServiceTest {
         when(userMapper.createUserDtoToUser(createUserDto)).thenReturn(user);
         when(userMapper.userToViewUserDto(user)).thenReturn(expectedViewUserDto);
 
-        ViewUserDto result = userService.createUser(createUserDto);
+        ViewUserDto result = userService.createUserWithDefaultRole(createUserDto);
 
         assertNotNull(result);
         assertEquals(expectedViewUserDto, result);

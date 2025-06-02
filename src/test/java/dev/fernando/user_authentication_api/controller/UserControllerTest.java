@@ -52,7 +52,7 @@ class UserControllerTest {
 
     @Test
     void testCreateUser() throws Exception {
-        CreateUserDto createUserDto = new CreateUserDto("user", "email@test.com", "password", "999999", "222222", Date.from(Instant.now()), UserRole.USER);
+        CreateUserDto createUserDto = new CreateUserDto("user", "email@test.com", "password", "999999", "222222", Date.from(Instant.now()));
 
         String json = objectMapper.writeValueAsString(createUserDto);
 

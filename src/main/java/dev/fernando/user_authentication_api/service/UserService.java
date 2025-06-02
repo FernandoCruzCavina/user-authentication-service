@@ -3,6 +3,7 @@ package dev.fernando.user_authentication_api.service;
 import dev.fernando.user_authentication_api.dto.CreateUserDto;
 import dev.fernando.user_authentication_api.dto.UpdateUserDto;
 import dev.fernando.user_authentication_api.dto.ViewUserDto;
+import dev.fernando.user_authentication_api.enums.UserRole;
 import dev.fernando.user_authentication_api.model.User;
 import dev.fernando.user_authentication_api.exception.UserAlreadyExist;
 import dev.fernando.user_authentication_api.exception.UserNotFound;
@@ -33,7 +34,7 @@ public class UserService {
         this.userProducer = userProducer;
     }
 
-    @Cacheable(value = "usersById", key = "#id")
+    // @Cacheable(value = "usersById", key = "#id")
     public ViewUserDto findUserById(long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(UserNotFound::new);
@@ -41,7 +42,7 @@ public class UserService {
         return userMapper.userToViewUserDto(user);
     }
 
-    @Cacheable(value = "usersByEmail", key = "#email")
+    // @Cacheable(value = "usersByEmail", key = "#email")
     public ViewUserDto findUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(UserNotFound::new);
@@ -50,22 +51,24 @@ public class UserService {
     }
 
     @Transactional
-    @CachePut(value = "usersByEmail", key = "#createUserDto.email()")
-    public ViewUserDto createUser(CreateUserDto createUserDto) {
+    // @CachePut(value = "usersByEmail", key = "#createUserDto.email()")
+    public ViewUserDto createUserWithDefaultRole(CreateUserDto createUserDto) {
 
         userRepository.findByEmail(createUserDto.email()).ifPresent(UserAlreadyExist::new);
 
         User user = userMapper.createUserDtoToUser(createUserDto);
         String hashedPassword = passwordEncoder.encode(createUserDto.password());
         user.setPassword(hashedPassword);
+        user.setUser_role(UserRole.USER);
         User createdUser = userRepository.save(user);
 
         userProducer.publishMessageEmail(createdUser);
+        userProducer.createAccount(createdUser.getId());
         return userMapper.userToViewUserDto(user);
     }
 
     @Transactional
-    @CachePut(value = "usersById", key = "#id")
+    // @CachePut(value = "usersById", key = "#id")
     public ViewUserDto updateUser(int id, UpdateUserDto updateUserDto) {
         User user = userRepository.findById(id)
                 .orElseThrow(UserNotFound::new);
@@ -82,7 +85,7 @@ public class UserService {
     }
 
     @Transactional
-    @CacheEvict(value = "usersById", key = "#id")
+    // @CacheEvict(value = "usersById", key = "#id")
     public ViewUserDto deleteUserById(long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(UserNotFound::new);
@@ -93,7 +96,7 @@ public class UserService {
     }
 
     @Transactional
-    @CacheEvict(value = "usersByEmail", key = "#email")
+    // @CacheEvict(value = "usersByEmail", key = "#email")
     public ViewUserDto deleteUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(UserNotFound::new);
