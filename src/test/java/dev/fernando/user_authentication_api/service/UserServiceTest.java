@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -49,7 +50,7 @@ class UserServiceTest {
 
     @BeforeEach
     public void setUp() {
-        user = new User(1, "user", "email@test.com", "password", "999999", "333333",555555, UserRole.USER);
+        user = new User(1L, "user", "email@test.com", "password", "999999", "333333", 555555L);
         expectedViewUserDto = new ViewUserDto(1, "user", "email@test.com", "999999");
         createUserDto = new CreateUserDto("user", "email@test.com", "password", "999999", "333333", Date.from(Instant.now()));
         updateUserDto = new UpdateUserDto("user", "password", "newPassword", "999999");
@@ -83,7 +84,8 @@ class UserServiceTest {
     void createUser() {
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
         when(userMapper.createUserDtoToUser(createUserDto)).thenReturn(user);
-        when(userMapper.userToViewUserDto(user)).thenReturn(expectedViewUserDto);
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userMapper.userToViewUserDto(any(User.class))).thenReturn(expectedViewUserDto);
 
         ViewUserDto result = userService.createUserWithDefaultRole(createUserDto);
 

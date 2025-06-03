@@ -17,6 +17,9 @@
 - 📧 [Email](https://github.com/FernandoCruzCavina/email-sender-service)
 - 🧭 [Service Discovery](https://github.com/FernandoCruzCavina/service-discovery)
 - 🚪 [Gateway](https://github.com/FernandoCruzCavina/gateway)
+- 🎨 [Front-End](https://github.com/FernandoCruzCavina/bank-frontend)
+
+- 🏦 [Projeto-Final](https://github.com/FernandoCruzCavina/Bank-PixScam) 
 
 ## Authors
 
