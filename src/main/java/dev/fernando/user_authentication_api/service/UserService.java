@@ -5,6 +5,7 @@ import dev.fernando.user_authentication_api.dto.UpdateUserDto;
 import dev.fernando.user_authentication_api.dto.ViewUserDto;
 import dev.fernando.user_authentication_api.enums.UserRole;
 import dev.fernando.user_authentication_api.model.User;
+import dev.fernando.user_authentication_api.exception.ChangePasswordIncorrect;
 import dev.fernando.user_authentication_api.exception.UserAlreadyExist;
 import dev.fernando.user_authentication_api.exception.UserNotFound;
 import dev.fernando.user_authentication_api.mapper.UserMapper;
@@ -72,8 +73,14 @@ public class UserService {
     public ViewUserDto updateUser(int id, UpdateUserDto updateUserDto) {
         User user = userRepository.findById(id)
                 .orElseThrow(UserNotFound::new);
+        
+        boolean isTheSamePassword = passwordEncoder.matches(updateUserDto.oldPassword(), user.getPassword());
+        
+        if(!isTheSamePassword){
+            throw new ChangePasswordIncorrect();
+        }
 
-        String hashedPassword = passwordEncoder.encode(updateUserDto.password());
+        String hashedPassword = passwordEncoder.encode(updateUserDto.newPassword());
 
         user.setUsername(updateUserDto.username());
         user.setPassword(hashedPassword);

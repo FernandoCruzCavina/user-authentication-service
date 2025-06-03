@@ -52,7 +52,7 @@ class UserServiceTest {
         user = new User(1, "user", "email@test.com", "password", "999999", "333333",555555, UserRole.USER);
         expectedViewUserDto = new ViewUserDto(1, "user", "email@test.com", "999999");
         createUserDto = new CreateUserDto("user", "email@test.com", "password", "999999", "333333", Date.from(Instant.now()));
-        updateUserDto = new UpdateUserDto("user", "password", "999999");
+        updateUserDto = new UpdateUserDto("user", "password", "newPassword", "999999");
     }
 
     @Test
@@ -96,6 +96,7 @@ class UserServiceTest {
     void updateUser() {
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         when(userMapper.userToViewUserDto(user)).thenReturn(expectedViewUserDto);
+        when(passwordEncoder.matches(updateUserDto.oldPassword(), user.getPassword())).thenReturn(true);
 
         ViewUserDto result = userService.updateUser(1,updateUserDto);
 

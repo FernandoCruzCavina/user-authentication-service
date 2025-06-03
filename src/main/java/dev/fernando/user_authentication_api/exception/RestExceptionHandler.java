@@ -27,9 +27,17 @@ public class RestExceptionHandler {
     @ExceptionHandler(UserAlreadyExist.class)
     public ResponseEntity<MessageException> handleUserAlreadyExist(UserAlreadyExist ex) {
 
-        MessageException messageException = new MessageException(HttpStatus.NOT_ACCEPTABLE, ex.getMessage());
+        MessageException messageException = new MessageException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
 
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageException);
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(messageException);
+    }
+
+    @ExceptionHandler(ChangePasswordIncorrect.class)
+    public ResponseEntity<MessageException> handleChangePasswordIncorrect(ChangePasswordIncorrect ex) {
+
+        MessageException messageException = new MessageException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(messageException);
     }
 
 }

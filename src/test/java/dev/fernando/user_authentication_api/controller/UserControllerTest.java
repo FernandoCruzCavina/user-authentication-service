@@ -45,11 +45,6 @@ class UserControllerTest {
         userRepository.deleteAll();
     }
 
-    private User createTestUser(String email) {
-        User user = new User("user", email, passwordEncoder.encode("password"), "999999", UserRole.ADMIN);
-        return userRepository.save(user);
-    }
-
     @Test
     void testCreateUser() throws Exception {
         CreateUserDto createUserDto = new CreateUserDto("user", "email@test.com", "password", "999999", "222222", Date.from(Instant.now()));
@@ -67,8 +62,6 @@ class UserControllerTest {
 
     @Test
     void testGetUserById() throws Exception {
-        User user = createTestUser("test@example.com");
-
         User user1 = userRepository.save(new User("user", "email@test.com", "password", "999999"));
 
         mockMvc.perform(get("/user/id=" + user1.getId()))
@@ -79,8 +72,6 @@ class UserControllerTest {
 
     @Test
     void testGetUserByEmail() throws Exception {
-        User user = createTestUser("test@example.com");
-
         userRepository.save(new User("user", "email@test.com", "password", "999999"));
 
         mockMvc.perform(get("/user/email=email@test.com"))
@@ -91,11 +82,9 @@ class UserControllerTest {
 
     @Test
     void testUpdateUser() throws Exception {
-        User user = createTestUser("test@example.com");
+        var userSaved = userRepository.save(new User("user", "email@test.com", passwordEncoder.encode("password"), "999999"));
 
-        var userSaved = userRepository.save(new User("user", "email@test.com", "password", "999999"));
-
-        UpdateUserDto updateUserDto = new UpdateUserDto("updatedUser","newPassword","888888");
+        UpdateUserDto updateUserDto = new UpdateUserDto("updatedUser","password","newPassword","888888");
         String json = objectMapper.writeValueAsString(updateUserDto);
 
         mockMvc.perform(put("/user/id=" + userSaved.getId())
@@ -108,8 +97,6 @@ class UserControllerTest {
 
     @Test
     void testDeleteUserById() throws Exception {
-        User user = createTestUser("test@example.com");
-
         User user1 = userRepository.save(new User("user", "email@test.com", "password", "999999"));
 
         mockMvc.perform(delete("/user/id=" + user1.getId()))
@@ -120,8 +107,6 @@ class UserControllerTest {
 
     @Test
     void testDeleteUserByEmail() throws Exception {
-        User user = createTestUser("test@example.com");
-
         userRepository.save(new User("user", "email@test.com", "password", "999999"));
 
         mockMvc.perform(delete("/user/email=email@test.com"))

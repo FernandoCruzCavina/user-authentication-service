@@ -12,6 +12,7 @@ import java.util.Date;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
+    
     ViewUserDto userToViewUserDto(User user);
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "birthday_date", target = "birthday_date", qualifiedByName = "dateToEpoch")
