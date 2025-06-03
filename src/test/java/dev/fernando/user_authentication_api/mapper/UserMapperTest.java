@@ -1,16 +1,16 @@
 package dev.fernando.user_authentication_api.mapper;
 
-import dev.fernando.user_authentication_api.enums.UserRole;
-import dev.fernando.user_authentication_api.dto.CreateUserDto;
-import dev.fernando.user_authentication_api.model.User;
-import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.Instant;
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
+
+import dev.fernando.user_authentication_api.dto.CreateUserDto;
+import dev.fernando.user_authentication_api.model.User;
 
 class UserMapperTest {
 

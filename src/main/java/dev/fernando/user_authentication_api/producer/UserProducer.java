@@ -1,10 +1,12 @@
 package dev.fernando.user_authentication_api.producer;
 
-import dev.fernando.user_authentication_api.dto.SendEmailDto;
-import dev.fernando.user_authentication_api.model.User;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import dev.fernando.user_authentication_api.dto.AuthUserDto;
+import dev.fernando.user_authentication_api.dto.SendEmailDto;
+import dev.fernando.user_authentication_api.model.User;
 
 @Component
 public class UserProducer {
@@ -15,6 +17,8 @@ public class UserProducer {
     private String routingKeyEmail;
     @Value("${broker.queue.create.account}")
     private String routingKeyAccount;
+    @Value("${broker.queue.create.auth}")
+    private String routingKeyAuth;
 
     public UserProducer(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
@@ -31,7 +35,11 @@ public class UserProducer {
         rabbitTemplate.convertAndSend("", routingKeyEmail, emailDto);
     }
 
-    public void createAccount(long userId){
+    public void publishAccountCreation(long userId){
         rabbitTemplate.convertAndSend("", routingKeyAccount, userId);
+    }
+
+    public void publishUserCredentials(AuthUserDto authUserDto){
+        rabbitTemplate.convertAndSend("", routingKeyAuth, authUserDto);
     }
 }

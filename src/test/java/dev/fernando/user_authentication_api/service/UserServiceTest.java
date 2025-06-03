@@ -1,13 +1,15 @@
 package dev.fernando.user_authentication_api.service;
 
-import dev.fernando.user_authentication_api.enums.UserRole;
-import dev.fernando.user_authentication_api.dto.CreateUserDto;
-import dev.fernando.user_authentication_api.dto.UpdateUserDto;
-import dev.fernando.user_authentication_api.dto.ViewUserDto;
-import dev.fernando.user_authentication_api.model.User;
-import dev.fernando.user_authentication_api.mapper.UserMapper;
-import dev.fernando.user_authentication_api.producer.UserProducer;
-import dev.fernando.user_authentication_api.repository.UserRepository;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.time.Instant;
+import java.util.Date;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,15 +18,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.Instant;
-import java.util.Date;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import dev.fernando.user_authentication_api.dto.CreateUserDto;
+import dev.fernando.user_authentication_api.dto.UpdateUserDto;
+import dev.fernando.user_authentication_api.dto.ViewUserDto;
+import dev.fernando.user_authentication_api.mapper.UserMapper;
+import dev.fernando.user_authentication_api.model.User;
+import dev.fernando.user_authentication_api.producer.UserProducer;
+import dev.fernando.user_authentication_api.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {

@@ -1,11 +1,15 @@
 package dev.fernando.user_authentication_api.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.fernando.user_authentication_api.enums.UserRole;
-import dev.fernando.user_authentication_api.dto.CreateUserDto;
-import dev.fernando.user_authentication_api.dto.UpdateUserDto;
-import dev.fernando.user_authentication_api.model.User;
-import dev.fernando.user_authentication_api.repository.UserRepository;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.Instant;
+import java.util.Date;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +20,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.time.Instant;
-import java.util.Date;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import dev.fernando.user_authentication_api.dto.CreateUserDto;
+import dev.fernando.user_authentication_api.dto.UpdateUserDto;
+import dev.fernando.user_authentication_api.model.User;
+import dev.fernando.user_authentication_api.repository.UserRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc

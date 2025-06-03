@@ -1,13 +1,14 @@
 package dev.fernando.user_authentication_api.mapper;
 
-import dev.fernando.user_authentication_api.dto.CreateUserDto;
-import dev.fernando.user_authentication_api.dto.ViewUserDto;
-import dev.fernando.user_authentication_api.model.User;
+import java.util.Date;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-import java.util.Date;
+import dev.fernando.user_authentication_api.dto.CreateUserDto;
+import dev.fernando.user_authentication_api.dto.ViewUserDto;
+import dev.fernando.user_authentication_api.model.User;
 
 
 @Mapper(componentModel = "spring")

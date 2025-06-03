@@ -1,23 +1,22 @@
 package dev.fernando.user_authentication_api.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import dev.fernando.user_authentication_api.dto.AuthUserDto;
 import dev.fernando.user_authentication_api.dto.CreateUserDto;
 import dev.fernando.user_authentication_api.dto.UpdateUserDto;
 import dev.fernando.user_authentication_api.dto.ViewUserDto;
 import dev.fernando.user_authentication_api.enums.UserRole;
-import dev.fernando.user_authentication_api.model.User;
 import dev.fernando.user_authentication_api.exception.ChangePasswordIncorrect;
 import dev.fernando.user_authentication_api.exception.UserAlreadyExist;
 import dev.fernando.user_authentication_api.exception.UserNotFound;
 import dev.fernando.user_authentication_api.mapper.UserMapper;
+import dev.fernando.user_authentication_api.model.User;
 import dev.fernando.user_authentication_api.producer.UserProducer;
 import dev.fernando.user_authentication_api.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -64,7 +63,8 @@ public class UserService {
         User createdUser = userRepository.save(user);
 
         userProducer.publishMessageEmail(createdUser);
-        userProducer.createAccount(createdUser.getId());
+        userProducer.publishAccountCreation(createdUser.getId());
+        userProducer.publishUserCredentials(new AuthUserDto(createdUser.getEmail(), createdUser.getPassword(), createdUser.getUser_role()));
         return userMapper.userToViewUserDto(user);
     }
 
