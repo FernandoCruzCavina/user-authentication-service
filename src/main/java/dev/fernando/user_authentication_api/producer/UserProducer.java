@@ -30,16 +30,13 @@ public class UserProducer {
         emailDto.setEmailTo(createdUser.getEmail());
         emailDto.setName(createdUser.getUsername());
         emailDto.setSubject("Your registration has been successfully completed");
-        emailDto.setText("Welcome, " + createdUser.getUsername() + "!\nThank you for registering. We hope you enjoy the services offered by our bank.");
+        emailDto.setText("Welcome, " + createdUser.getUsername()
+                + "!\nThank you for registering. We hope you enjoy the services offered by our bank.");
 
         rabbitTemplate.convertAndSend("", routingKeyEmail, emailDto);
     }
 
-    public void publishAccountCreation(long userId){
+    public void publishAccountCreation(Long userId) {
         rabbitTemplate.convertAndSend("", routingKeyAccount, userId);
-    }
-
-    public void publishUserCredentials(AuthUserDto authUserDto){
-        rabbitTemplate.convertAndSend("", routingKeyAuth, authUserDto);
     }
 }

@@ -30,13 +30,13 @@ public class UserController {
     private final String userString = "user";
     private final String update = "update";
     private final String delete = "delete";
-    
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @GetMapping("/id={id}")
-    public ResponseEntity<EntityModel<ViewUserDto>> getUserById(@PathVariable("id") int id) {
+    public ResponseEntity<EntityModel<ViewUserDto>> getUserById(@PathVariable("id") Long id) {
         ViewUserDto user = userService.findUserById(id);
 
         EntityModel<ViewUserDto> model = EntityModel.of(user);
@@ -46,6 +46,7 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(model);
     }
+
     @GetMapping("/email={email}")
     public ResponseEntity<EntityModel<ViewUserDto>> getUserByEmail(@PathVariable("email") String email) {
         ViewUserDto user = userService.findUserByEmail(email);
@@ -72,19 +73,19 @@ public class UserController {
     }
 
     @PutMapping("/id={id}")
-    public ResponseEntity<EntityModel<ViewUserDto>> updateUser(@PathVariable int id, @RequestBody UpdateUserDto user) {
+    public ResponseEntity<EntityModel<ViewUserDto>> updateUser(@PathVariable Long id, @RequestBody UpdateUserDto user) {
         ViewUserDto userDto = userService.updateUser(id, user);
 
         EntityModel<ViewUserDto> model = EntityModel.of(userDto);
-        model.add(linkTo(methodOn(UserController.class).updateUser(id,user)).withSelfRel());
-        model.add(linkTo(methodOn(UserController.class).getUserById(id)).withRel(userString));
-        model.add(linkTo(methodOn(UserController.class).deleteUserById(id)).withRel(delete));
+        model.add(linkTo(methodOn(UserController.class).updateUser(id, user)).withSelfRel());
+        model.add(linkTo(methodOn(UserController.class).getUserById(id)).withRel("user"));
+        model.add(linkTo(methodOn(UserController.class).deleteUserById(id)).withRel("delete"));
 
         return ResponseEntity.status(HttpStatus.OK).body(model);
     }
 
     @DeleteMapping("/id={id}")
-    public ResponseEntity<EntityModel<ViewUserDto>> deleteUserById(@PathVariable("id") int id) {
+    public ResponseEntity<EntityModel<ViewUserDto>> deleteUserById(@PathVariable("id") Long id) {
         ViewUserDto userDto = userService.deleteUserById(id);
 
         EntityModel<ViewUserDto> model = EntityModel.of(userDto);

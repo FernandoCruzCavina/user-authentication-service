@@ -1,11 +1,14 @@
 package dev.fernando.user_authentication_api.model;
 
+import dev.fernando.user_authentication_api.dto.UserEventDto;
 import dev.fernando.user_authentication_api.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,16 +26,15 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String username;
     private String email;
     private String password;
     private String phone;
     private String cpf;
-    private long birthday_date;
+    private Long birthday_date;
     @Enumerated(EnumType.STRING)
     private UserRole user_role;
-
 
     public User(String username, String email, String password, String phone) {
         this.username = username;
@@ -49,7 +51,7 @@ public class User implements UserDetails {
         this.user_role = user_role;
     }
 
-    public User(String username, String email, String password, String phone, String cpf, long birthday_date) {
+    public User(String username, String email, String password, String phone, String cpf, Long birthday_date) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -58,7 +60,7 @@ public class User implements UserDetails {
         this.birthday_date = birthday_date;
     }
 
-    public User(long id, String username, String email, String password, String phone, String cpf, long birthday_date) {
+    public User(Long id, String username, String email, String password, String phone, String cpf, Long birthday_date) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -68,7 +70,8 @@ public class User implements UserDetails {
         this.birthday_date = birthday_date;
     }
 
-    public User(String username, String email, String password, String phone, String cpf, long birthday_date, UserRole user_role) {
+    public User(String username, String email, String password, String phone, String cpf, Long birthday_date,
+            UserRole user_role) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -80,11 +83,19 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.user_role ==UserRole.ADMIN) {
+        if (this.user_role == UserRole.ADMIN) {
             return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
         } else {
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));
         }
     }
 
+    public UserEventDto convertToUserEventDto() {
+        var userEventDto = new UserEventDto();
+
+        BeanUtils.copyProperties(this, userEventDto);
+        userEventDto.setIdUser(this.getId());
+
+        return userEventDto;
+    }
 }
