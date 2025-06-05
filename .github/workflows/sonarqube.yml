@@ -52,6 +52,9 @@ jobs:
           broker.queue.email.sender=email.sender
           broker.queue.create.account=create.account
           broker.queue.create.auth=create.auth
+
+          broker.exchance.userExchange=userevent
+          broker.queue.userEventQueue=user.ms.account
           " > src/test/resources/application-test.properties
 
       - name: Set application.properties
@@ -71,6 +74,9 @@ jobs:
           broker.queue.email.sender=email.sender
           broker.queue.create.account=create.account
           broker.queue.create.auth=create.auth
+
+          broker.exchance.userExchange=userevent
+          broker.queue.userEventQueue=user.ms.account
           " > src/main/resources/application.properties
 
       - name: Build and analyze

@@ -35,7 +35,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/id={id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<EntityModel<ViewUserDto>> getUserById(@PathVariable("id") Long id) {
         ViewUserDto user = userService.findUserById(id);
 
@@ -47,7 +47,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(model);
     }
 
-    @GetMapping("/email={email}")
+    @GetMapping("/email/{email}")
     public ResponseEntity<EntityModel<ViewUserDto>> getUserByEmail(@PathVariable("email") String email) {
         ViewUserDto user = userService.findUserByEmail(email);
 
@@ -72,7 +72,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(model);
     }
 
-    @PutMapping("/id={id}")
+    @PutMapping("/id/{id}")
     public ResponseEntity<EntityModel<ViewUserDto>> updateUser(@PathVariable Long id, @RequestBody UpdateUserDto user) {
         ViewUserDto userDto = userService.updateUser(id, user);
 
@@ -84,7 +84,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(model);
     }
 
-    @DeleteMapping("/id={id}")
+    @DeleteMapping("/id/{id}")
     public ResponseEntity<EntityModel<ViewUserDto>> deleteUserById(@PathVariable("id") Long id) {
         ViewUserDto userDto = userService.deleteUserById(id);
 
@@ -94,7 +94,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(model);
     }
 
-    @DeleteMapping("/email={email}")
+    @DeleteMapping("/email/{email}")
     public ResponseEntity<EntityModel<ViewUserDto>> deleteUserByEmail(@PathVariable String email) {
         ViewUserDto userDto = userService.deleteUserByEmail(email);
 

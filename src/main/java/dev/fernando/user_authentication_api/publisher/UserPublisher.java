@@ -1,34 +1,39 @@
-package dev.fernando.user_authentication_api.producer;
+package dev.fernando.user_authentication_api.publisher;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import dev.fernando.user_authentication_api.dto.AuthUserDto;
 import dev.fernando.user_authentication_api.dto.SendEmailDto;
+import dev.fernando.user_authentication_api.dto.UserEventDto;
+import dev.fernando.user_authentication_api.enums.CreationType;
 import dev.fernando.user_authentication_api.model.User;
 
 @Component
-public class UserProducer {
+public class UserPublisher {
+    @Autowired
+    RabbitTemplate rabbitTemplate;
 
-    private final RabbitTemplate rabbitTemplate;
-
-    @Value("${broker.queue.email.sender}")
+    @Value(value = "${broker.exchance.userExchange}")
+    private String exchangeUserEvent;
+    @Value(value = "${broker.queue.email.sender}")
     private String routingKeyEmail;
-    @Value("${broker.queue.create.account}")
+    @Value(value = "${broker.queue.create.account}")
     private String routingKeyAccount;
-    @Value("${broker.queue.create.auth}")
+    @Value(value = "${broker.queue.create.auth}")
     private String routingKeyAuth;
-
-    public UserProducer(RabbitTemplate rabbitTemplate) {
-        this.rabbitTemplate = rabbitTemplate;
+    
+    public void publishUserEvent(UserEventDto UserEventDto, CreationType creationType) {
+        UserEventDto.setCreationType(creationType.toString());
+        rabbitTemplate.convertAndSend(exchangeUserEvent, "", UserEventDto);
     }
 
     public void publishMessageEmail(User createdUser) {
         var emailDto = new SendEmailDto();
 
         emailDto.setEmailTo(createdUser.getEmail());
-        emailDto.setName(createdUser.getUsername());
         emailDto.setSubject("Your registration has been successfully completed");
         emailDto.setText("Welcome, " + createdUser.getUsername()
                 + "!\nThank you for registering. We hope you enjoy the services offered by our bank.");
@@ -38,5 +43,9 @@ public class UserProducer {
 
     public void publishAccountCreation(Long userId) {
         rabbitTemplate.convertAndSend("", routingKeyAccount, userId);
+    }
+
+    public void publishUserCredentials(AuthUserDto authUserDto) {
+        rabbitTemplate.convertAndSend("", routingKeyAuth, authUserDto);
     }
 }

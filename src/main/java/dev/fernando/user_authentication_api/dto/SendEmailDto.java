@@ -12,7 +12,6 @@ import lombok.Setter;
 public class SendEmailDto {
 
     String emailTo;
-    String name;
     String subject;
     String text;
 

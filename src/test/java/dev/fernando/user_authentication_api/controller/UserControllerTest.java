@@ -15,19 +15,22 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dev.fernando.user_authentication_api.config.RabbitMQTestConfig;
 import dev.fernando.user_authentication_api.dto.CreateUserDto;
 import dev.fernando.user_authentication_api.dto.UpdateUserDto;
+import dev.fernando.user_authentication_api.enums.UserRole;
 import dev.fernando.user_authentication_api.model.User;
 import dev.fernando.user_authentication_api.repository.UserRepository;
 
 @SpringBootTest
+@Import(RabbitMQTestConfig.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 class UserControllerTest {
@@ -51,10 +54,9 @@ class UserControllerTest {
 
     @Test
     void testCreateUser() throws Exception {
-        CreateUserDto createUserDto = new CreateUserDto("user", "email@test.com", "password", "999999", "222222", Date.from(Instant.now()));
-
+        CreateUserDto createUserDto = new CreateUserDto(
+                "user", "email@test.com", "password", "999999", "222222", Date.from(Instant.now()));
         String json = objectMapper.writeValueAsString(createUserDto);
-
 
         mockMvc.perform(post("/user")
                         .contentType("application/json")
@@ -66,56 +68,61 @@ class UserControllerTest {
 
     @Test
     void testGetUserById() throws Exception {
-        User user1 = userRepository.save(new User("user", "email@test.com", "password", "999999"));
+        User user = userRepository.save(new User("user", "email@test.com", "password", "999999", "222222", Date.from(Instant.now()).getTime(), UserRole.USER));
 
-        mockMvc.perform(get("/user/id=" + user1.getId()))
+        mockMvc.perform(get("/user/id/" + user.getId()))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("user"))
                 .andExpect(jsonPath("$.email").value("email@test.com"))
-                .andExpect(jsonPath("$.username").value("user"));
+                .andExpect(jsonPath("$._links.self.href").exists());
     }
 
     @Test
     void testGetUserByEmail() throws Exception {
-        userRepository.save(new User("user", "email@test.com", "password", "999999"));
+        userRepository.save(new User("user", "email@test.com", "password", "999999", "222222", Date.from(Instant.now()).getTime(), UserRole.USER));
 
-        mockMvc.perform(get("/user/email=email@test.com"))
+        mockMvc.perform(get("/user/email/email@test.com"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("email@test.com"))
-                .andExpect(jsonPath("$.username").value("user"));
+                .andExpect(jsonPath("$.username").value("user"))
+                .andExpect(jsonPath("$._links.self.href").exists());
     }
 
     @Test
     void testUpdateUser() throws Exception {
-        var userSaved = userRepository.save(new User("user", "email@test.com", passwordEncoder.encode("password"), "999999"));
+        User user = userRepository.save(new User("user", "email@test.com", passwordEncoder.encode("password"), "999999", "222222", Date.from(Instant.now()).getTime(), UserRole.USER));
 
-        UpdateUserDto updateUserDto = new UpdateUserDto("updatedUser","password","newPassword","888888");
+        UpdateUserDto updateUserDto = new UpdateUserDto("updatedUser", "password", "newPassword", "888888");
         String json = objectMapper.writeValueAsString(updateUserDto);
 
-        mockMvc.perform(put("/user/id=" + userSaved.getId())
+        mockMvc.perform(put("/user/id/" + user.getId())
                         .contentType("application/json")
                         .content(json))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("updatedUser"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.phone").value("888888"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("updatedUser"))
+                .andExpect(jsonPath("$.phone").value("888888"))
+                .andExpect(jsonPath("$._links.self.href").exists());
     }
 
     @Test
     void testDeleteUserById() throws Exception {
-        User user1 = userRepository.save(new User("user", "email@test.com", "password", "999999"));
+        User user = userRepository.save(new User("user", "email@test.com", "password", "999999", "222222", Date.from(Instant.now()).getTime(), UserRole.USER));
 
-        mockMvc.perform(delete("/user/id=" + user1.getId()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(user1.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("email@test.com"));
+        mockMvc.perform(delete("/user/id/" + user.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value("email@test.com"))
+                .andExpect(jsonPath("$.id").value(user.getId()))
+                .andExpect(jsonPath("$._links.self.href").exists());
     }
 
     @Test
     void testDeleteUserByEmail() throws Exception {
-        userRepository.save(new User("user", "email@test.com", "password", "999999"));
+        userRepository.save(new User("user", "email@test.com", "password", "999999", "222222", Date.from(Instant.now()).getTime(), UserRole.USER));
 
-        mockMvc.perform(delete("/user/email=email@test.com"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("email@test.com"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("user"));
+        mockMvc.perform(delete("/user/email/email@test.com"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("user"))
+                .andExpect(jsonPath("$.email").value("email@test.com"))
+                .andExpect(jsonPath("$._links.self.href").exists());
     }
 }
