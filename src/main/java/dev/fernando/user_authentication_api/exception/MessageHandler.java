@@ -9,7 +9,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @AllArgsConstructor
 @Getter
 @Setter
-public class MessageException extends ResponseEntityExceptionHandler {
+public class MessageHandler extends ResponseEntityExceptionHandler {
 
     private HttpStatus status;
     private String message;

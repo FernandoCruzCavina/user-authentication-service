@@ -26,10 +26,10 @@ public class UserController {
 
     private final UserService userService;
 
-    private final String idString = "id";
-    private final String userString = "user";
-    private final String update = "update";
-    private final String delete = "delete";
+    private final static String idString = "id";
+    private final static String userString = "user";
+    private final static String update = "update";
+    private final static String delete = "delete";
 
     public UserController(UserService userService) {
         this.userService = userService;

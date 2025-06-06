@@ -72,14 +72,14 @@ public class User implements UserDetails {
         this.birthdayDate = birthdayDate;
     }
 
-    public User(String username, String email, String password, String phone, String cpf, Long birthday_date,
+    public User(String username, String email, String password, String phone, String cpf, Long birthdayDate,
             UserRole userRole) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.phone = phone;
         this.cpf = cpf;
-        this.birthdayDate = birthday_date;
+        this.birthdayDate = birthdayDate;
         this.userRole = userRole;
     }
 

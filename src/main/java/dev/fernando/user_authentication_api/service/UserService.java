@@ -60,7 +60,7 @@ public class UserService {
 
         userEventPublisher.publishMessageEmail(createdUser);
         userEventPublisher.publishAccountCreation(createdUser.getId());
-        userEventPublisher.publishUserCredentials(new AuthUserDto(createdUser.getEmail(), createdUser.getPassword(), createdUser.getUserRole()));
+        userEventPublisher.publishUserCredentials(new AuthUserDto(createdUser.getEmail(), createdUser.getPassword(), UserRole.USER));
         userEventPublisher.publishUserEvent(user.convertToUserEventDto(), CreationType.CREATEACCOUNT);
 
         return user.toViewUserDto();

@@ -9,33 +9,33 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class RestExceptionHandler {
 
     @ExceptionHandler(UserNotFound.class)
-    public ResponseEntity<MessageException> handleUserNotFound(UserNotFound ex) {
+    public ResponseEntity<MessageHandler> handleUserNotFound(UserNotFound ex) {
 
-        MessageException messageException = new MessageException(HttpStatus.NOT_FOUND, ex.getMessage());
+        MessageHandler messageException = new MessageHandler(HttpStatus.NOT_FOUND, ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageException);
     }
 
     @ExceptionHandler(InvalidUserCredentials.class)
-    public ResponseEntity<MessageException> handleInvalidUserCredentials(InvalidUserCredentials ex) {
+    public ResponseEntity<MessageHandler> handleInvalidUserCredentials(InvalidUserCredentials ex) {
 
-        MessageException messageException = new MessageException(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        MessageHandler messageException = new MessageHandler(HttpStatus.UNAUTHORIZED, ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(messageException);
     }
 
     @ExceptionHandler(UserAlreadyExist.class)
-    public ResponseEntity<MessageException> handleUserAlreadyExist(UserAlreadyExist ex) {
+    public ResponseEntity<MessageHandler> handleUserAlreadyExist(UserAlreadyExist ex) {
 
-        MessageException messageException = new MessageException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        MessageHandler messageException = new MessageHandler(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(messageException);
     }
 
     @ExceptionHandler(ChangePasswordIncorrect.class)
-    public ResponseEntity<MessageException> handleChangePasswordIncorrect(ChangePasswordIncorrect ex) {
+    public ResponseEntity<MessageHandler> handleChangePasswordIncorrect(ChangePasswordIncorrect ex) {
 
-        MessageException messageException = new MessageException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        MessageHandler messageException = new MessageHandler(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(messageException);
     }

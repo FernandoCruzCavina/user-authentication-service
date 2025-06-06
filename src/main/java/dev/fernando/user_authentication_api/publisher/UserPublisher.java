@@ -13,7 +13,6 @@ import dev.fernando.user_authentication_api.model.User;
 
 @Component
 public class UserPublisher {
-    @Autowired
     RabbitTemplate rabbitTemplate;
 
     @Value(value = "${broker.exchance.userExchange}")
@@ -25,9 +24,14 @@ public class UserPublisher {
     @Value(value = "${broker.queue.create.auth}")
     private String routingKeyAuth;
     
-    public void publishUserEvent(UserEventDto UserEventDto, CreationType creationType) {
-        UserEventDto.setCreationType(creationType.toString());
-        rabbitTemplate.convertAndSend(exchangeUserEvent, "", UserEventDto);
+    public UserPublisher(RabbitTemplate rabbitTemplate){
+        this.rabbitTemplate = rabbitTemplate;
+    }
+
+    public void publishUserEvent(UserEventDto userEventDto, CreationType creationType) {
+        userEventDto.setCreationType(creationType.toString());
+        rabbitTemplate.convertAndSend(exchangeUserEvent, "", userEventDto);
+        System.out.println("sender to account service");
     }
 
     public void publishMessageEmail(User createdUser) {
@@ -47,5 +51,6 @@ public class UserPublisher {
 
     public void publishUserCredentials(AuthUserDto authUserDto) {
         rabbitTemplate.convertAndSend("", routingKeyAuth, authUserDto);
+        System.out.println(authUserDto.userRole());
     }
 }
