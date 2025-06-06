@@ -50,7 +50,7 @@ public class UserService {
     @Transactional
     public ViewUserDto createUserWithDefaultRole(CreateUserDto createUserDto) {
 
-        userRepository.findByEmail(createUserDto.email()).ifPresent(UserAlreadyExist::new);
+        userRepository.findByEmail(createUserDto.email()).ifPresent(u -> {throw new UserAlreadyExist(u);});
 
         User user = createUserDto.toUser();
         String hashedPassword = passwordEncoder.encode(createUserDto.password());

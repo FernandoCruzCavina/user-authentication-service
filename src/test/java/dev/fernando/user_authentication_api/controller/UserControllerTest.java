@@ -125,4 +125,57 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.email").value("email@test.com"))
                 .andExpect(jsonPath("$._links.self.href").exists());
     }
+
+    @Test
+    void testCreateUser_whenEmailAlreadyExists_shouldReturn422() throws Exception {
+        CreateUserDto createUserDto = new CreateUserDto(
+                "user", "email@test.com", "password", "999999", "222222", Date.from(Instant.now()));
+
+        userRepository.save(createUserDto.toUser());
+
+        String json = objectMapper.writeValueAsString(createUserDto);
+
+        mockMvc.perform(post("/user")
+                        .contentType("application/json")
+                        .content(json))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message").value("User with email@test.com already exist"));
+    }
+
+    @Test
+    void testGetUserById_whenNotFound_shouldReturn404() throws Exception {
+        mockMvc.perform(get("/user/id/999999"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("User not found"));
+    }
+
+    @Test
+    void testGetUserByEmail_whenNotFound_shouldReturn404() throws Exception {
+        mockMvc.perform(get("/user/email/nonexistent@email.com"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("User not found"));
+    }
+
+    @Test
+    void testUpdateUser_whenOldPasswordIncorrect_shouldReturn422() throws Exception {
+        User user = userRepository.save(new User("user", "email@test.com", passwordEncoder.encode("correctPassword"),
+                "999999", "222222", Date.from(Instant.now()).getTime(), UserRole.USER));
+
+        UpdateUserDto updateUserDto = new UpdateUserDto("newUsername", "wrongPassword", "newPass123", "888888");
+        String json = objectMapper.writeValueAsString(updateUserDto);
+
+        mockMvc.perform(put("/user/id/" + user.getId())
+                        .contentType("application/json")
+                        .content(json))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message").value("Incorrect current password"));
+    }
+
+    @Test
+    void testDeleteUserById_whenUserDoesNotExist_shouldReturn404() throws Exception {
+        mockMvc.perform(delete("/user/id/999999"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("User not found"));
+    }
+
 }
