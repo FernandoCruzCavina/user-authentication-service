@@ -1,7 +1,6 @@
 package dev.fernando.user_authentication_api.publisher;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -38,9 +37,9 @@ public class UserPublisher {
         var emailDto = new SendEmailDto();
 
         emailDto.setEmailTo(createdUser.getEmail());
-        emailDto.setSubject("Your registration has been successfully completed");
-        emailDto.setText("Welcome, " + createdUser.getUsername()
-                + "!\nThank you for registering. We hope you enjoy the services offered by our bank.");
+        emailDto.setSubject("Seu cadastro foi realizado com sucesso!");
+        emailDto.setText("Bem-vindo, " + createdUser.getUsername()
+                + "!\nObrigado por se registrar. Esperamos que você aproveite os serviços oferecidos pelo nosso banco.");
 
         rabbitTemplate.convertAndSend("", routingKeyEmail, emailDto);
     }
