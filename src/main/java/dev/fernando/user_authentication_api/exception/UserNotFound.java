@@ -3,7 +3,7 @@ package dev.fernando.user_authentication_api.exception;
 public class UserNotFound extends RuntimeException {
 
     public UserNotFound() {
-        super("User not found");
+        super("Usuário não encontrado");
     }
 
     public UserNotFound(String message) {

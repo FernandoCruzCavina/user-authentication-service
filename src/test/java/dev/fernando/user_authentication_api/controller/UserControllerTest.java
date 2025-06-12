@@ -139,21 +139,21 @@ class UserControllerTest {
                         .contentType("application/json")
                         .content(json))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").value("User with email@test.com already exist"));
+                .andExpect(jsonPath("$.message").value("Usuário com email email@test.com já existe"));
     }
 
     @Test
     void testGetUserById_whenNotFound_shouldReturn404() throws Exception {
         mockMvc.perform(get("/user/id/999999"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("User not found"));
+                .andExpect(jsonPath("$.message").value("Usuário não encontrado"));
     }
 
     @Test
     void testGetUserByEmail_whenNotFound_shouldReturn404() throws Exception {
         mockMvc.perform(get("/user/email/nonexistent@email.com"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("User not found"));
+                .andExpect(jsonPath("$.message").value("Usuário não encontrado"));
     }
 
     @Test
@@ -168,14 +168,14 @@ class UserControllerTest {
                         .contentType("application/json")
                         .content(json))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").value("Incorrect current password"));
+                .andExpect(jsonPath("$.message").value("A senha atual está incorreta"));
     }
 
     @Test
     void testDeleteUserById_whenUserDoesNotExist_shouldReturn404() throws Exception {
         mockMvc.perform(delete("/user/id/999999"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("User not found"));
+                .andExpect(jsonPath("$.message").value("Usuário não encontrado"));
     }
 
 }

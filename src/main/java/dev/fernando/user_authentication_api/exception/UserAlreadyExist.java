@@ -5,6 +5,6 @@ import dev.fernando.user_authentication_api.model.User;
 public class UserAlreadyExist extends RuntimeException{
 
     public UserAlreadyExist(User user) {
-        super("User with " + user.getEmail() + " already exist");
+        super("Usuário com email " + user.getEmail() + " já existe");
     }
 }
