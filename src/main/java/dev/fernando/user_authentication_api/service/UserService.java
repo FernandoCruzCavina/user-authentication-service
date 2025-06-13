@@ -11,9 +11,9 @@ import dev.fernando.user_authentication_api.dto.UpdateUserDto;
 import dev.fernando.user_authentication_api.dto.ViewUserDto;
 import dev.fernando.user_authentication_api.enums.CreationType;
 import dev.fernando.user_authentication_api.enums.UserRole;
-import dev.fernando.user_authentication_api.exception.ChangePasswordIncorrect;
-import dev.fernando.user_authentication_api.exception.UserAlreadyExist;
-import dev.fernando.user_authentication_api.exception.UserNotFound;
+import dev.fernando.user_authentication_api.exception.ChangePasswordIncorrectException;
+import dev.fernando.user_authentication_api.exception.UserAlreadyExistException;
+import dev.fernando.user_authentication_api.exception.UserNotFoundException;
 import dev.fernando.user_authentication_api.model.User;
 import dev.fernando.user_authentication_api.publisher.UserPublisher;
 import dev.fernando.user_authentication_api.repository.UserRepository;
@@ -35,14 +35,14 @@ public class UserService {
 
     public ViewUserDto findUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(UserNotFound::new);
+                .orElseThrow(UserNotFoundException::new);
 
         return user.toViewUserDto();
     }
 
     public ViewUserDto findUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(UserNotFound::new);
+                .orElseThrow(UserNotFoundException::new);
 
         return user.toViewUserDto();
     }
@@ -50,7 +50,7 @@ public class UserService {
     @Transactional
     public ViewUserDto createUserWithDefaultRole(CreateUserDto createUserDto) {
 
-        userRepository.findByEmail(createUserDto.email()).ifPresent(u -> {throw new UserAlreadyExist(u);});
+        userRepository.findByEmail(createUserDto.email()).ifPresent(u -> {throw new UserAlreadyExistException(u);});
 
         User user = createUserDto.toUser();
         String hashedPassword = passwordEncoder.encode(createUserDto.password());
@@ -69,12 +69,12 @@ public class UserService {
     @Transactional
     public ViewUserDto updateUser(Long id, UpdateUserDto updateUserDto) {
         User user = userRepository.findById(id)
-                .orElseThrow(UserNotFound::new);
+                .orElseThrow(UserNotFoundException::new);
 
         boolean isTheSamePassword = passwordEncoder.matches(updateUserDto.oldPassword(), user.getPassword());
 
         if (!isTheSamePassword) {
-            throw new ChangePasswordIncorrect();
+            throw new ChangePasswordIncorrectException();
         }
 
         String hashedPassword = passwordEncoder.encode(updateUserDto.newPassword());
@@ -91,7 +91,7 @@ public class UserService {
     @Transactional
     public ViewUserDto deleteUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(UserNotFound::new);
+                .orElseThrow(UserNotFoundException::new);
 
         userRepository.deleteById(id);
 
@@ -101,7 +101,7 @@ public class UserService {
     @Transactional
     public ViewUserDto deleteUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(UserNotFound::new);
+                .orElseThrow(UserNotFoundException::new);
 
         userRepository.deleteById(user.getId());
 

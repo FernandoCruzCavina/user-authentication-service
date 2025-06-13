@@ -8,32 +8,32 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class RestExceptionHandler {
 
-    @ExceptionHandler(UserNotFound.class)
-    public ResponseEntity<MessageHandler> handleUserNotFound(UserNotFound ex) {
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<MessageHandler> handleUserNotFound(UserNotFoundException ex) {
 
         MessageHandler messageException = new MessageHandler(HttpStatus.NOT_FOUND, ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageException);
     }
 
-    @ExceptionHandler(InvalidUserCredentials.class)
-    public ResponseEntity<MessageHandler> handleInvalidUserCredentials(InvalidUserCredentials ex) {
+    @ExceptionHandler(InvalidUserCredentialsException.class)
+    public ResponseEntity<MessageHandler> handleInvalidUserCredentials(InvalidUserCredentialsException ex) {
 
         MessageHandler messageException = new MessageHandler(HttpStatus.UNAUTHORIZED, ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(messageException);
     }
 
-    @ExceptionHandler(UserAlreadyExist.class)
-    public ResponseEntity<MessageHandler> handleUserAlreadyExist(UserAlreadyExist ex) {
+    @ExceptionHandler(UserAlreadyExistException.class)
+    public ResponseEntity<MessageHandler> handleUserAlreadyExist(UserAlreadyExistException ex) {
 
         MessageHandler messageException = new MessageHandler(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(messageException);
     }
 
-    @ExceptionHandler(ChangePasswordIncorrect.class)
-    public ResponseEntity<MessageHandler> handleChangePasswordIncorrect(ChangePasswordIncorrect ex) {
+    @ExceptionHandler(ChangePasswordIncorrectException.class)
+    public ResponseEntity<MessageHandler> handleChangePasswordIncorrect(ChangePasswordIncorrectException ex) {
 
         MessageHandler messageException = new MessageHandler(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
 

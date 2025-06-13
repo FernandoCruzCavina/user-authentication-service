@@ -23,9 +23,9 @@ import dev.fernando.user_authentication_api.dto.CreateUserDto;
 import dev.fernando.user_authentication_api.dto.UpdateUserDto;
 import dev.fernando.user_authentication_api.dto.ViewUserDto;
 import dev.fernando.user_authentication_api.enums.UserRole;
-import dev.fernando.user_authentication_api.exception.ChangePasswordIncorrect;
-import dev.fernando.user_authentication_api.exception.UserAlreadyExist;
-import dev.fernando.user_authentication_api.exception.UserNotFound;
+import dev.fernando.user_authentication_api.exception.ChangePasswordIncorrectException;
+import dev.fernando.user_authentication_api.exception.UserAlreadyExistException;
+import dev.fernando.user_authentication_api.exception.UserNotFoundException;
 import dev.fernando.user_authentication_api.model.User;
 import dev.fernando.user_authentication_api.publisher.UserPublisher;
 import dev.fernando.user_authentication_api.repository.UserRepository;
@@ -150,25 +150,25 @@ class UserServiceTest {
     @Test
     void findUserById_shouldThrowUserNotFound() {
         when(userRepository.findById(99L)).thenReturn(Optional.empty());
-        assertThrows(UserNotFound.class, () -> userService.findUserById(99L));
+        assertThrows(UserNotFoundException.class, () -> userService.findUserById(99L));
     }
 
     @Test
     void findUserByEmail_shouldThrowUserNotFound() {
         when(userRepository.findByEmail("notfound@test.com")).thenReturn(Optional.empty());
-        assertThrows(UserNotFound.class, () -> userService.findUserByEmail("notfound@test.com"));
+        assertThrows(UserNotFoundException.class, () -> userService.findUserByEmail("notfound@test.com"));
     }
 
     @Test
     void createUserWithDefaultRole_shouldThrowUserAlreadyExist() {
         when(userRepository.findByEmail(createUserDto.email())).thenReturn(Optional.of(user));
-        assertThrows(UserAlreadyExist.class, () -> userService.createUserWithDefaultRole(createUserDto));
+        assertThrows(UserAlreadyExistException.class, () -> userService.createUserWithDefaultRole(createUserDto));
     }
 
     @Test
     void updateUser_shouldThrowChangePasswordIncorrect() {
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(updateUserDto.oldPassword(), user.getPassword())).thenReturn(false);
-        assertThrows(ChangePasswordIncorrect.class, () -> userService.updateUser(user.getId(), updateUserDto));
+        assertThrows(ChangePasswordIncorrectException.class, () -> userService.updateUser(user.getId(), updateUserDto));
     }
 }
