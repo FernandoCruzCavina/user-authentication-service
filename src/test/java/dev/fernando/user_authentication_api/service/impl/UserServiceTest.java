@@ -1,4 +1,4 @@
-package dev.fernando.user_authentication_api.service;
+package dev.fernando.user_authentication_api.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -42,7 +42,7 @@ class UserServiceTest {
     private UserPublisher userPublisher;
 
     @InjectMocks
-    private UserService userService;
+    private UserServiceImpl userService;
 
     private User user;
     private CreateUserDto createUserDto;
