@@ -18,6 +18,15 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Represents a user in the system.
+ * Implements UserDetails for Spring Security integration.
+ * Contains user information such as username, email, password, phone, cpf, birthday date, and user role.
+ * Provides methods to convert to DTOs and manage user roles.
+ * 
+ * @author Fernando Cruz Cavina
+ * @since 1.0.0
+ */
 @Getter
 @Setter
 @AllArgsConstructor
@@ -91,7 +100,12 @@ public class User implements UserDetails {
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));
         }
     }
-
+    
+    /**
+     * Converts the User entity to a UserEventDto.
+     * This method is used to prepare user data for event publishing, such as account creation or updates.
+     * @return
+     */
     public UserEventDto convertToUserEventDto() {
         var userEventDto = new UserEventDto();
 
@@ -101,6 +115,12 @@ public class User implements UserDetails {
         return userEventDto;
     }
 
+    /**
+     * Converts the User entity to a ViewUserDto.
+     * This method is used to prepare user data for API responses.
+     * 
+     * @return a ViewUserDto object containing user details
+     */
     public  ViewUserDto toViewUserDto(){
         var userDto = new ViewUserDto(
             this.id,
