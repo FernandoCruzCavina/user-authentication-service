@@ -1,0 +1,11 @@
+dev.fernando.user_authentication_api
+dev.fernando.user_authentication_api.config
+dev.fernando.user_authentication_api.controller
+dev.fernando.user_authentication_api.dto
+dev.fernando.user_authentication_api.enums
+dev.fernando.user_authentication_api.exception
+dev.fernando.user_authentication_api.model
+dev.fernando.user_authentication_api.publisher
+dev.fernando.user_authentication_api.repository
+dev.fernando.user_authentication_api.service
+dev.fernando.user_authentication_api.service.impl
