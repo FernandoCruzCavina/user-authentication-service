@@ -6,6 +6,9 @@
     <img src="https://sonarcloud.io/api/project_badges/measure?project=FernandoCruzCavina_user-authentication-service&metric=code_smells" />
     <img src="https://sonarcloud.io/api/project_badges/measure?project=FernandoCruzCavina_user-authentication-service&metric=duplicated_lines_density" />
     <img src="https://sonarcloud.io/api/project_badges/measure?project=FernandoCruzCavina_user-authentication-service&metric=coverage" />
+    <a href="https://fernandocruzcavina.github.io/user-authentication-service/javadoc/">
+        <img src="https://img.shields.io/badge/JavaDoc-Online-green" />
+    </a>
 </div>
 
 ## Table of Contents

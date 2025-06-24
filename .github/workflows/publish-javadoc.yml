@@ -1,9 +1,12 @@
 name: Publish JavaDoc
 
 on:
-  push: 
-    branches: 
+  push:
+    branches:
       ['main']
+
+permissions:
+  contents: write
 
 jobs:
   publish-javadoc:
