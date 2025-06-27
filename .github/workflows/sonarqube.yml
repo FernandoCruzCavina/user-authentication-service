@@ -4,8 +4,10 @@ on:
   push:
     branches:
       - develop
+    paths-ignore: 
+      ['**/pom.xml', 'Dockerfile']
   workflow_dispatch: 
-    
+
 jobs:
   build:
     name: Analyze with SonarCloud
