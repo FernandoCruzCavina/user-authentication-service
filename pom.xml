@@ -28,7 +28,7 @@
     </scm>
     <properties>
         <java.version>21</java.version>
-        <org.projectlombok>1.18.36</org.projectlombok>
+        <org.projectlombok>1.18.38</org.projectlombok>
     </properties>
     <dependencies>
         <dependency>
