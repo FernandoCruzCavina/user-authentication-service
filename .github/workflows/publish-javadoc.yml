@@ -1,12 +1,19 @@
 name: Publish JavaDoc
 
 on:
-  push:
-    branches:
-      ['main']
+  push: 
+    branches: 
+      - main
+  workflow_dispatch:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   publish-javadoc:
@@ -25,9 +32,33 @@ jobs:
       - name: Generate JavaDoc
         run: mvn javadoc:javadoc
 
-      - name: Deploy to gh-pages
+      - name: Commit to gh-pages branch
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./target/reports/apidocs
           publish_branch: gh-pages
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: publish-javadoc
+    steps:
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v4
+        with:
+            ref: gh-pages
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
